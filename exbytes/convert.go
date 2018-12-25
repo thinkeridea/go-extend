@@ -29,8 +29,7 @@ import "unsafe"
 //
 // 尽快的消耗掉 string 是个好主意， 也可以遗忘掉 []byte 后面不在使用这个， 而只使用 string。
 //
-// 与该方法相反的操作是：exstrings.ToBytes
+// 比较好的例子是 exstrings.UnsafePad 系列函数，在函数内部使用 []byte 作为字符串缓冲区，返回字符串通过该方法转换。
 func ToString(s []byte) string {
-
 	return *(*string)(unsafe.Pointer(&s))
 }

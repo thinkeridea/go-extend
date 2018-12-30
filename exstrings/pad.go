@@ -150,7 +150,7 @@ func UnsafePad(s, pad string, c, falg int) string {
 	return exbytes.ToString(b)
 }
 
-// LeftPad 使用另一个字符串从左端填充字符串为指定长度。
+// UnsafeLeftPad 使用另一个字符串从左端填充字符串为指定长度。
 //
 // 该函数使用 unsafe 包转换数据类型，降低内存分配。
 func UnsafeLeftPad(s, pad string, c int) string {
@@ -166,7 +166,7 @@ func UnsafeLeftPad(s, pad string, c int) string {
 	return exbytes.ToString(b)
 }
 
-// RightPad 使用另一个字符串从右端填充字符串为指定长度。
+// UnsafeRightPad 使用另一个字符串从右端填充字符串为指定长度。
 //
 // 该函数使用 unsafe 包转换数据类型，降低内存分配。
 func UnsafeRightPad(s, pad string, c int) string {
@@ -182,7 +182,7 @@ func UnsafeRightPad(s, pad string, c int) string {
 	return exbytes.ToString(b)
 }
 
-// BothPad 使用另一个字符串从两端填充字符串为指定长度，
+// UnsafeBothPad 使用另一个字符串从两端填充字符串为指定长度，
 // 如果补充长度是奇数，右边的字符会更多一些。
 //
 // 该函数使用 unsafe 包转换数据类型，降低内存分配。

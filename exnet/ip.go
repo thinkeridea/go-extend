@@ -89,7 +89,7 @@ func ClientIP(r *http.Request) string {
 	return ""
 }
 
-// ClientIP 尽最大努力实现获取客户端公网 IP 的算法。
+// ClientPublicIP 尽最大努力实现获取客户端公网 IP 的算法。
 // 解析 X-Real-IP 和 X-Forwarded-For 以便于反向代理（nginx 或 haproxy）可以正常工作。
 func ClientPublicIP(r *http.Request) string {
 	var ip string

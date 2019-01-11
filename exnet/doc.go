@@ -13,5 +13,5 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// package exnet 收集一些网络模块函数
+// Package exnet 收集一些网络模块函数
 package exnet

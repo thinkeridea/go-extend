@@ -100,7 +100,7 @@ func SetApiState(state ApiState) {
 
 // ServeHTTP http.HandlerFunc 接口
 // 该接口会检查是否开放，在非开放时间接口将返回 404。
-
+//
 // 接口状态可以通过 SetApiState 来设置，每次设置开发之后将在 OpenTime 时间之后关闭。
 func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if atomic.LoadInt32(&apiState) != int32(OpenApi) {

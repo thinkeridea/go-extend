@@ -14,7 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /*
-package expprof 这是从 net/http/pprof 包复制过来的，做了一些调整
+Package expprof 这是从 net/http/pprof 包复制过来的，做了一些调整
 我希望核心的逻辑不变，保持和标准库一致的功能，会调整使用的接口，使之易于控制。
 
 我为什么会有这样的想法，主要源于自己想对程序的性能做分析，但是每次都需要调整程序并重新发布，

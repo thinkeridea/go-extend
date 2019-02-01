@@ -16,9 +16,12 @@
 package exnet
 
 import (
+	"math"
 	"net"
 	"net/http"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 // 收集的内网网络地址 IP 段
@@ -114,11 +117,61 @@ func ClientPublicIP(r *http.Request) string {
 	return ""
 }
 
-// RemoteIp 通过 RemoteAddr 获取 IP 地址， 只是一个快速解析方法。
-func RemoteIp(r *http.Request) string {
+// RemoteIP 通过 RemoteAddr 获取 IP 地址， 只是一个快速解析方法。
+func RemoteIP(r *http.Request) string {
 	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
 		return ip
 	}
 
 	return ""
+}
+
+// IPString2Long 把ip字符串转为数值
+func IPString2Long(ip string) (uint, error) {
+	b := net.ParseIP(ip).To4()
+	if b == nil {
+		return 0, errors.New("invalid ipv4 format")
+	}
+
+	return uint(b[3]) | uint(b[2])<<8 | uint(b[1])<<16 | uint(b[0])<<24, nil
+}
+
+// Long2IPString 把数值转为ip字符串
+func Long2IPString(i uint) (string, error) {
+	if i > math.MaxUint32 {
+		return "", errors.New("beyond the scope of ipv4")
+	}
+
+	ip := make(net.IP, net.IPv4len)
+	ip[0] = byte(i >> 24)
+	ip[1] = byte(i >> 16)
+	ip[2] = byte(i >> 8)
+	ip[3] = byte(i)
+
+	return ip.String(), nil
+}
+
+// IP2Long 把net.IP转为数值
+func IP2Long(ip net.IP) (uint, error) {
+	b := ip.To4()
+	if b == nil {
+		return 0, errors.New("invalid ipv4 format")
+	}
+
+	return uint(b[3]) | uint(b[2])<<8 | uint(b[1])<<16 | uint(b[0])<<24, nil
+}
+
+// Long2IP 把数值转为net.IP
+func Long2IP(i uint) (net.IP, error) {
+	if i > math.MaxUint32 {
+		return nil, errors.New("beyond the scope of ipv4")
+	}
+
+	ip := make(net.IP, net.IPv4len)
+	ip[0] = byte(i >> 24)
+	ip[1] = byte(i >> 16)
+	ip[2] = byte(i >> 8)
+	ip[3] = byte(i)
+
+	return ip, nil
 }

@@ -83,7 +83,7 @@ func TestHasLocalIP(t *testing.T) {
 	}
 }
 
-func TestRemoteIp(t *testing.T) {
+func TestRemoteIP(t *testing.T) {
 	for _, v := range []struct {
 		remoteAddr string
 		expected   string
@@ -93,7 +93,7 @@ func TestRemoteIp(t *testing.T) {
 		{"101.1.0.4", ""},
 		{":100", ""},
 	} {
-		if actual := RemoteIp(&http.Request{RemoteAddr: v.remoteAddr}); actual != v.expected {
+		if actual := RemoteIP(&http.Request{RemoteAddr: v.remoteAddr}); actual != v.expected {
 			t.Errorf("RemoteAddr:%s actual: %s, expected %s", v.remoteAddr, actual, v.expected)
 		}
 	}
@@ -176,5 +176,89 @@ func TestClientPublicIP(t *testing.T) {
 	r.RemoteAddr = "  127.0.0.1:42123 "
 	if ip := ClientPublicIP(r); ip != "" {
 		t.Errorf("ip: 127.0.0.1")
+	}
+}
+
+func TestIPString2Long(t *testing.T) {
+	for _, v := range []struct {
+		ip   string
+		long uint
+	}{
+		{"127.0.0.1", 2130706433},
+		{"0.0.0.0", 0},
+		{"255.255.255.255", 4294967295},
+		{"192.168.1.1", 3232235777},
+	} {
+		expected, err := IPString2Long(v.ip)
+		if err != nil {
+			t.Errorf("ip:%s long:%d err:%v", v.ip, v.long, err)
+		}
+
+		if expected != v.long {
+			t.Errorf("ip:%s long:%d != expected:%d", v.ip, v.long, expected)
+		}
+	}
+}
+
+func TestLong2IPString(t *testing.T) {
+	for _, v := range []struct {
+		ip   string
+		long uint
+	}{
+		{"127.0.0.1", 2130706433},
+		{"0.0.0.0", 0},
+		{"255.255.255.255", 4294967295},
+		{"192.168.1.1", 3232235777},
+	} {
+		expected, err := Long2IPString(v.long)
+		if err != nil {
+			t.Errorf("ip:%s long:%d err:%v", v.ip, v.long, err)
+		}
+
+		if expected != v.ip {
+			t.Errorf(" long:%d ip:%s != expected:%s", v.long, v.ip, expected)
+		}
+	}
+}
+
+func TestIP2Long(t *testing.T) {
+	for _, v := range []struct {
+		ip   string
+		long uint
+	}{
+		{"127.0.0.1", 2130706433},
+		{"0.0.0.0", 0},
+		{"255.255.255.255", 4294967295},
+		{"192.168.1.1", 3232235777},
+	} {
+		expected, err := IP2Long(net.ParseIP(v.ip))
+		if err != nil {
+			t.Errorf("ip:%s long:%d err:%v", v.ip, v.long, err)
+		}
+
+		if expected != v.long {
+			t.Errorf("ip:%s long:%d != expected:%d", v.ip, v.long, expected)
+		}
+	}
+}
+
+func TestLong2IP(t *testing.T) {
+	for _, v := range []struct {
+		ip   string
+		long uint
+	}{
+		{"127.0.0.1", 2130706433},
+		{"0.0.0.0", 0},
+		{"255.255.255.255", 4294967295},
+		{"192.168.1.1", 3232235777},
+	} {
+		expected, err := Long2IP(v.long)
+		if err != nil {
+			t.Errorf("ip:%s long:%d err:%v", v.ip, v.long, err)
+		}
+
+		if expected.String() != v.ip {
+			t.Errorf(" long:%d ip:%s != expected:%s", v.long, v.ip, expected.String())
+		}
 	}
 }

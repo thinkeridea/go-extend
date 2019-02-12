@@ -16,6 +16,9 @@
 package exstrings
 
 import (
+	"strings"
+	"unicode/utf8"
+
 	"github.com/thinkeridea/go-extend/exbytes"
 )
 
@@ -78,4 +81,40 @@ func UnsafeJoin(a []string, sep string) string {
 		bp += copy(b[bp:], s)
 	}
 	return exbytes.ToString(b)
+}
+
+// UnsafeReplace 替换字符串
+// 该方法是对标准库 strings.Replace 修改，配合 unsafe 包能有效减少内存分配。
+func UnsafeReplace(s, old, new string, n int) string {
+	if old == new || n == 0 {
+		return s // avoid allocation
+	}
+
+	// Compute number of replacements.
+	if m := strings.Count(s, old); m == 0 {
+		return s // avoid allocation
+	} else if n < 0 || m < n {
+		n = m
+	}
+
+	// Apply replacements to buffer.
+	t := make([]byte, len(s)+n*(len(new)-len(old)))
+	w := 0
+	start := 0
+	for i := 0; i < n; i++ {
+		j := start
+		if len(old) == 0 {
+			if i > 0 {
+				_, wid := utf8.DecodeRuneInString(s[start:])
+				j += wid
+			}
+		} else {
+			j += strings.Index(s[start:], old)
+		}
+		w += copy(t[w:], s[start:j])
+		w += copy(t[w:], new)
+		start = j + len(old)
+	}
+	w += copy(t[w:], s[start:])
+	return exbytes.ToString(t[0:w])
 }

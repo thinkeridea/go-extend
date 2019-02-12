@@ -111,3 +111,24 @@ func equal(m string, s1, s2 string, t *testing.T) bool {
 	}
 	return false
 }
+
+func TestUnsafeJoin(t *testing.T) {
+	for _, v := range []struct {
+		in       []string
+		out, sep string
+	}{
+		{[]string{}, "", "-"},
+		{[]string{"a"}, "a", "-"},
+		{[]string{"a", "b"}, "a-b", "-"},
+		{[]string{"a", "b", "c"}, "a-b-c", "-"},
+		{[]string{"a", "b", "c", "d"}, "a-b-c-d", "-"},
+		{[]string{"a", "b", "c", "d", "e"}, "a-b-c-d-e", "-"},
+		{[]string{"a", "b", "c", "d", "e", "f"}, "a-b-c-d-e-f", "-"},
+	} {
+		a := UnsafeJoin(v.in, v.sep)
+		if a != v.out {
+			t.Errorf("UnsafeJoin(%v, %s) = %v; want %v", v.in, v.sep, v.out, a)
+			continue
+		}
+	}
+}

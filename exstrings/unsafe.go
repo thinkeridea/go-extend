@@ -15,7 +15,9 @@
 
 package exstrings
 
-import "github.com/thinkeridea/go-extend/exbytes"
+import (
+	"github.com/thinkeridea/go-extend/exbytes"
+)
 
 /*
 UnsafeRepeat 返回由字符串s的计数副本组成的新字符串。
@@ -43,6 +45,37 @@ func UnsafeRepeat(s string, count int) string {
 	for bp < len(b) {
 		copy(b[bp:], b[:bp])
 		bp *= 2
+	}
+	return exbytes.ToString(b)
+}
+
+// UnsafeJoin 使用 sep 连接 a 的字符串。
+// 该方法是对标准库 strings.Join 修改，配合 unsafe 包能有效减少内存分配。
+func UnsafeJoin(a []string, sep string) string {
+	switch len(a) {
+	case 0:
+		return ""
+	case 1:
+		return a[0]
+	case 2:
+		// Special case for common small values.
+		// Remove if golang.org/issue/6714 is fixed
+		return a[0] + sep + a[1]
+	case 3:
+		// Special case for common small values.
+		// Remove if golang.org/issue/6714 is fixed
+		return a[0] + sep + a[1] + sep + a[2]
+	}
+	n := len(sep) * (len(a) - 1)
+	for i := 0; i < len(a); i++ {
+		n += len(a[i])
+	}
+
+	b := make([]byte, n)
+	bp := copy(b, a[0])
+	for _, s := range a[1:] {
+		bp += copy(b[bp:], sep)
+		bp += copy(b[bp:], s)
 	}
 	return exbytes.ToString(b)
 }

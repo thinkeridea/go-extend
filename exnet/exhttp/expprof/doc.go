@@ -21,12 +21,7 @@ Package expprof 这是从 net/http/pprof 包复制过来的，做了一些调整
 这极大的浪费了我的时间，在调整完之后我需要调整代码，去除 net/http/pprof 包，因为该包会暴露默认路由，
 这容易导致三方服务来分析我的程序，是极度危险的情况。
 
-我想实现两个功能来解决这一问题：
-
-1、接口路由可以由用户提供，而不是在这个包里定义
-
-2、接口可以设定开放和关闭，并且可以设定定时关闭，以避免调试结束接口还可以访问。
-当然我想开放与关闭的接口可以由用户控制，并且可以限定只有内网可以设置（这个只能用户自己实现），这样该功能是安全的。
+我想通过暴露简单的接口实现自定义路由前缀，并且可以使用内网中间件来过滤接口只允许内网访问。
 
 疑惑：我不知道这么做是否真的好，但是我感觉自己需要这个功能，暂时我还不清楚 pprof 包采集数据的原理，是否会一直采集数据，
 采集数据是否会对程序运行有影响，这让我有些迷茫，我简单查看了源码，貌似有些数据程序是一直采集的，但是有些数据是访问过指定功能后开始持续采集的，
@@ -36,33 +31,13 @@ Package expprof 这是从 net/http/pprof 包复制过来的，做了一些调整
 原生 net/http 使用示例：
 
 	expprof.RoutePrefix = "/debug/"
-	http.HandleFunc(expprof.RoutePrefix, expprof.ServeHTTP)
-	http.HandleFunc(expprof.RoutePrefix+"state", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(expprof.RoutePrefix, func(w http.ResponseWriter, r *http.Request) {
 		if !exnet.HasLocalIPddr(exnet.ClientIP(r)) {
 			w.WriteHeader(http.StatusNotFound)
+			return
 		}
 
-		s, err := strconv.Atoi(r.FormValue("s"))
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("错误的状态"))
-		}
-
-		switch s {
-		case int(expprof.CloseApi):
-			expprof.SetApiState(expprof.CloseApi)
-
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("close api"))
-		case int(expprof.OpenApi):
-			expprof.SetApiState(expprof.OpenApi)
-
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("open api"))
-		default:
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("无效的状态"))
-		}
+		expprof.ServeHTTP(w, r)
 	})
 
 	log.Println(http.ListenAndServe("localhost:6060", nil))
@@ -72,29 +47,12 @@ gin 使用示例：
 
     expprof.RoutePrefix = "/debug/"
 	g := gin.Default()
-	g.GET(expprof.RoutePrefix+"*cmd", gin.WrapF(expprof.ServeHTTP))
-	g.GET("/debug_state", func(c *gin.Context) {
+	g.GET(expprof.RoutePrefix+"*cmd", func(c *gin.Context) {
 		if !exnet.HasLocalIPddr(exnet.ClientIP(c.Request)) {
 			c.Status(http.StatusNotFound)
 			c.Abort()
 		}
-	}, func(c *gin.Context) {
-		s, err := strconv.Atoi(c.Query("s"))
-		if err != nil {
-			c.String(http.StatusBadRequest, "错误的状态")
-		}
-
-		switch s {
-		case int(expprof.CloseApi):
-			expprof.SetApiState(expprof.CloseApi)
-			c.String(http.StatusBadRequest, "close api")
-		case int(expprof.OpenApi):
-			expprof.SetApiState(expprof.OpenApi)
-			c.String(http.StatusOK, "open api")
-		default:
-			c.String(http.StatusBadRequest, "错误的状态")
-		}
-	})
+	}, gin.WrapF(expprof.ServeHTTP))
 
 	g.Run(":6060")
 

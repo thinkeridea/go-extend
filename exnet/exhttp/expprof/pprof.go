@@ -30,84 +30,16 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
-	"sync/atomic"
 	"time"
-)
-
-// ApiState api状态
-type ApiState int32
-
-const (
-	// CloseApi 关闭api
-	CloseApi ApiState = iota
-
-	// OpenApi 关闭api
-	OpenApi
 )
 
 var (
 	// RoutePrefix 路由前缀，必须与实际路由匹配，否者无法解析
-	RoutePrefix string
-
-	// OpenTime 每次启动api的开放时长，默认为半小时
-	OpenTime time.Duration
-
-	// apiState 表示api接口是否开放, 需要通过 SetApiState 接口设置
-	// 往往需要在服务中自行实现这一个功能，通过调用 SetApiState 来完成设置
-	// 不要在注册路由时设置，避免接口一直可用
-	apiState int32
-
-	// 定时器用来关闭接口
-	timer *time.Timer
-	l     sync.Mutex
+	RoutePrefix = "/pprof/"
 )
 
-func init() {
-	RoutePrefix = "/debug/pprof/"
-
-	OpenTime = 30 * time.Minute
-	timer = time.AfterFunc(OpenTime, func() {
-		atomic.StoreInt32(&apiState, int32(CloseApi))
-	})
-	timer.Stop()
-}
-
-// SetApiState 设置接口是否开放。
-// 该功能需要自己实现 http.Handler ，并且只能内网访问，如此可以保护 pprof 接口安全。
-//
-// 开放接口设置将在 OpenTime 时间之后关闭，确保 pprof 接口不会被遗忘关闭。
-// pprof 接口可以分析出源代码信息，并且找到程序性能薄弱处，如果长期开放可能导致服务被攻击。
-// 在实现 http.Handler 时可以使用内网认证中间件实现，保证设置接口开放状态只能在服务器内网使用。
-func SetApiState(state ApiState) {
-	l.Lock()
-	defer l.Unlock()
-
-	timer.Stop()
-
-	// 状态未发生改变
-	if atomic.SwapInt32(&apiState, int32(state)) == int32(state) {
-		return
-	}
-
-	if state != OpenApi {
-		return
-	}
-
-	// 在指定的时间后关闭 api 接口
-	timer.Reset(OpenTime)
-}
-
 // ServeHTTP http.HandlerFunc 接口
-// 该接口会检查是否开放，在非开放时间接口将返回 404。
-//
-// 接口状态可以通过 SetApiState 来设置，每次设置开发之后将在 OpenTime 时间之后关闭。
 func ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if atomic.LoadInt32(&apiState) != int32(OpenApi) {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
 	var name string
 	if strings.HasPrefix(r.URL.Path, RoutePrefix) {
 		name = strings.TrimLeft(strings.TrimPrefix(r.URL.Path, RoutePrefix), "/")

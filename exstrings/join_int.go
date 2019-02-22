@@ -93,7 +93,7 @@ func JoinInt64s(i []int64, sep string) string {
 	return buf.String()
 }
 
-// JoinUInts 使用 sep 连接 []uint 并返回连接的字符串
+// JoinUints 使用 sep 连接 []uint 并返回连接的字符串
 func JoinUints(i []uint, sep string) string {
 	buf := buffPool.Get()
 	for _, v := range i {
@@ -107,7 +107,7 @@ func JoinUints(i []uint, sep string) string {
 	return buf.String()
 }
 
-// JoinUInt8s 使用 sep 连接 []uint8 并返回连接的字符串
+// JoinUint8s 使用 sep 连接 []uint8 并返回连接的字符串
 func JoinUint8s(i []uint8, sep string) string {
 	buf := buffPool.Get()
 	for _, v := range i {
@@ -121,7 +121,7 @@ func JoinUint8s(i []uint8, sep string) string {
 	return buf.String()
 }
 
-// JoinUInt16s 使用 sep 连接 []uint16 并返回连接的字符串
+// JoinUint16s 使用 sep 连接 []uint16 并返回连接的字符串
 func JoinUint16s(i []uint16, sep string) string {
 	buf := buffPool.Get()
 	for _, v := range i {
@@ -135,7 +135,7 @@ func JoinUint16s(i []uint16, sep string) string {
 	return buf.String()
 }
 
-// JoinUInt32s 使用 sep 连接 []uint32 并返回连接的字符串
+// JoinUint32s 使用 sep 连接 []uint32 并返回连接的字符串
 func JoinUint32s(i []uint32, sep string) string {
 	buf := buffPool.Get()
 	for _, v := range i {
@@ -149,7 +149,7 @@ func JoinUint32s(i []uint32, sep string) string {
 	return buf.String()
 }
 
-// JoinUInt64s 使用 sep 连接 []uint64 并返回连接的字符串
+// JoinUint64s 使用 sep 连接 []uint64 并返回连接的字符串
 func JoinUint64s(i []uint64, sep string) string {
 	buf := buffPool.Get()
 	for _, v := range i {

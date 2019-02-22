@@ -164,7 +164,7 @@ func TestPool_Get(t *testing.T) {
 }
 
 func TestPool_Put(t *testing.T) {
-	p := GetBuff64()
+	p := (*pool)(newBufferPool(64))
 	b := p.Get()
 	b.WriteString("xx")
 	if b.String() != "xx" {
@@ -173,9 +173,9 @@ func TestPool_Put(t *testing.T) {
 
 	p.Put(b)
 
-	pp := p.(*pool)
-	b = (*sync.Pool)(pp).Get().(*bytes.Buffer)
+	pp := (*sync.Pool)(p)
+	b = pp.Get().(*bytes.Buffer)
 	if b.String() != "xx" {
-		t.Errorf("b.String():%s != xx", b.String())
+		t.Errorf("b1.String():%s != xx", b.String())
 	}
 }

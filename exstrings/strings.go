@@ -15,6 +15,10 @@
 
 package exstrings
 
+import (
+	"github.com/thinkeridea/go-extend/exbytes"
+)
+
 // Reverse 反转字符串，通过 https://golang.org/doc/code.html#Library 收集
 func Reverse(s string) string {
 	r := []rune(s)
@@ -22,4 +26,10 @@ func Reverse(s string) string {
 		r[i], r[j] = r[j], r[i]
 	}
 	return string(r)
+}
+
+// Replace 替换字符串
+// 该方法是对标准库 strings.Replace 修改，配合 unsafe 包能有效减少内存分配。
+func Replace(s, old, new string, n int) string {
+	return exbytes.ToString(UnsafeReplaceToBytes(s, old, new, n))
 }

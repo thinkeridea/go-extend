@@ -15,25 +15,12 @@
 
 package exstrings
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
-func TestReverse(t *testing.T) {
-	cases := []struct {
-		in, want string
-	}{
-		{"Hello, world", "dlrow ,olleH"},
-		{"Hello, 世界", "界世 ,olleH"},
-		{"", ""},
-	}
-	for _, c := range cases {
-		got := Reverse(c.in)
-		if got != c.want {
-			t.Errorf("Reverse(%q) == %q, want %q", c.in, got, c.want)
-		}
-	}
-}
-
-func TestReplace(t *testing.T) {
+func TestReplaceToBytes(t *testing.T) {
 	var ReplaceTests = []struct {
 		in       string
 		old, new string
@@ -61,8 +48,43 @@ func TestReplace(t *testing.T) {
 		{"☺☻☹", "", "<>", -1, "<>☺<>☻<>☹<>"},
 	}
 	for _, tt := range ReplaceTests {
-		if s := Replace(tt.in, tt.old, tt.new, tt.n); s != tt.out {
-			t.Errorf("Replace(%q, %q, %q, %d) = %q, want %q", tt.in, tt.old, tt.new, tt.n, s, tt.out)
+		if s := ReplaceToBytes(tt.in, tt.old, tt.new, tt.n); !reflect.DeepEqual(s, []byte(tt.out)) {
+			t.Errorf("Replace(%q, %q, %q, %d) = %q, want %q", tt.in, tt.old, tt.new, tt.n, string(s), tt.out)
 		}
 	}
 }
+
+func TestUnsafeReplaceToBytes(t *testing.T) {
+	var ReplaceTests = []struct {
+		in       string
+		old, new string
+		n        int
+		out      string
+	}{
+		{"hello", "l", "L", 0, "hello"},
+		{"hello", "l", "L", -1, "heLLo"},
+		{"hello", "x", "X", -1, "hello"},
+		{"", "x", "X", -1, ""},
+		{"radar", "r", "<r>", -1, "<r>ada<r>"},
+		{"", "", "<>", -1, "<>"},
+		{"banana", "a", "<>", -1, "b<>n<>n<>"},
+		{"banana", "a", "<>", 1, "b<>nana"},
+		{"banana", "a", "<>", 1000, "b<>n<>n<>"},
+		{"banana", "an", "<>", -1, "b<><>a"},
+		{"banana", "ana", "<>", -1, "b<>na"},
+		{"banana", "", "<>", -1, "<>b<>a<>n<>a<>n<>a<>"},
+		{"banana", "", "<>", 10, "<>b<>a<>n<>a<>n<>a<>"},
+		{"banana", "", "<>", 6, "<>b<>a<>n<>a<>n<>a"},
+		{"banana", "", "<>", 5, "<>b<>a<>n<>a<>na"},
+		{"banana", "", "<>", 1, "<>banana"},
+		{"banana", "a", "a", -1, "banana"},
+		{"banana", "a", "a", 1, "banana"},
+		{"☺☻☹", "", "<>", -1, "<>☺<>☻<>☹<>"},
+	}
+	for _, tt := range ReplaceTests {
+		if s := UnsafeReplaceToBytes(tt.in, tt.old, tt.new, tt.n); !reflect.DeepEqual(s, []byte(tt.out)) {
+			t.Errorf("Replace(%q, %q, %q, %d) = %q, want %q", tt.in, tt.old, tt.new, tt.n, string(s), tt.out)
+		}
+	}
+}
+

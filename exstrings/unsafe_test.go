@@ -22,7 +22,7 @@ import (
 	"unicode/utf8"
 )
 
-var RepeatTests = []struct {
+var UnsafeRepeatTests = []struct {
 	in, out string
 	count   int
 }{
@@ -36,7 +36,7 @@ var RepeatTests = []struct {
 }
 
 func TestUnsafeRepeat(t *testing.T) {
-	for _, tt := range RepeatTests {
+	for _, tt := range UnsafeRepeatTests {
 		a := UnsafeRepeat(tt.in, tt.count)
 		if !equal("Repeat(s)", a, tt.out, t) {
 			t.Errorf("Repeat(%v, %d) = %v; want %v", tt.in, tt.count, a, tt.out)
@@ -63,7 +63,7 @@ func repeatPanicRecover(s string, count int) (err error) {
 }
 
 // See Issue golang.org/issue/16237
-func TestRepeatCatchesOverflow(t *testing.T) {
+func TestUnsafeRepeatCatchesOverflow(t *testing.T) {
 	tests := [...]struct {
 		s      string
 		count  int
@@ -133,7 +133,7 @@ func TestUnsafeJoin(t *testing.T) {
 	}
 }
 
-func TestReplace(t *testing.T) {
+func TestUnsafeReplace(t *testing.T) {
 	var ReplaceTests = []struct {
 		in       string
 		old, new string
@@ -162,7 +162,7 @@ func TestReplace(t *testing.T) {
 	}
 	for _, tt := range ReplaceTests {
 		if s := UnsafeReplace(tt.in, tt.old, tt.new, tt.n); s != tt.out {
-			t.Errorf("Replace(%q, %q, %q, %d) = %q, want %q", tt.in, tt.old, tt.new, tt.n, s, tt.out)
+			t.Errorf("UnsafeReplace(%q, %q, %q, %d) = %q, want %q", tt.in, tt.old, tt.new, tt.n, s, tt.out)
 		}
 	}
 }

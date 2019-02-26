@@ -31,6 +31,9 @@ UnsafeRepeat 返回由字符串s的计数副本组成的新字符串。
 与标准库的性能差异（接近标准库性能的两倍）：
 	BenchmarkUnsafeRepeat-8            	   50000	     28003 ns/op	  303104 B/op	       1 allocs/op
 	BenchmarkStandardLibraryRepeat-8   	   30000	     50619 ns/op	  606208 B/op	       2 allocs/op
+
+
+Deprecated: 不在使用 Unsafe 前缀，保持与标准库相同的命名
 */
 func UnsafeRepeat(s string, count int) string {
 	// Since we cannot return an error on overflow,
@@ -54,6 +57,8 @@ func UnsafeRepeat(s string, count int) string {
 
 // UnsafeJoin 使用 sep 连接 a 的字符串。
 // 该方法是对标准库 strings.Join 修改，配合 unsafe 包能有效减少内存分配。
+//
+// Deprecated: 不在使用 Unsafe 前缀，保持与标准库相同的命名
 func UnsafeJoin(a []string, sep string) string {
 	switch len(a) {
 	case 0:
@@ -85,6 +90,8 @@ func UnsafeJoin(a []string, sep string) string {
 
 // UnsafeReplace 替换字符串
 // 该方法是对标准库 strings.Replace 修改，配合 unsafe 包能有效减少内存分配。
+//
+// Deprecated: 不在使用 Unsafe 前缀，保持与标准库相同的命名
 func UnsafeReplace(s, old, new string, n int) string {
 	if old == new || n == 0 {
 		return s // avoid allocation

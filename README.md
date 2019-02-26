@@ -12,6 +12,24 @@ go语言扩展包，收集一些常用的操作函数，辅助更快的完成开
 - 包名统一使用 `ex` 前缀， 避免与官方包冲突。
 - 包目录下 `doc.go` 作为包说明文档。
 
+## 标准库函数改进性能测试：
+
+- [exstrings](exstrings/)
+
+	- Replace 系列函数测试报告
+
+	```
+	goos: darwin
+	goarch: amd64
+	pkg: github.com/thinkeridea/go-extend/exstrings/benchmark
+	BenchmarkReplace-8                  	  500000	      3256 ns/op	     960 B/op	      15 allocs/op
+	BenchmarkReplaceToBytes-8           	  500000	      3283 ns/op	    1024 B/op	      16 allocs/op
+	BenchmarkUnsafeReplaceToBytes-8     	  500000	      3041 ns/op	     960 B/op	      15 allocs/op
+	BenchmarkStandardLibraryReplace-8   	  500000	      3679 ns/op	    1920 B/op	      30 allocs/op
+	PASS
+	ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	7.769s
+	```
+
 版权：
 
 所有包统一使用 `GNU General Public License v3.0` 协议，每个源码文件开头必须包含以下版权描述：

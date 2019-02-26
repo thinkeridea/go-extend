@@ -94,3 +94,21 @@ func BenchmarkStandardLibraryReplace(b *testing.B) {
 		strings.Replace(s, "dd", "d", -1)
 	}
 }
+
+func BenchmarkRepeat(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		exstrings.Repeat("ABC", 100000)
+	}
+}
+
+func BenchmarkRepeatToBytes(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		exstrings.RepeatToBytes("ABC", 100000)
+	}
+}
+
+func BenchmarkStandardLibraryRepeat(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		strings.Repeat("ABC", 100000)
+	}
+}

@@ -16,7 +16,9 @@
 package exstrings
 
 import (
+	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -88,3 +90,60 @@ func TestUnsafeReplaceToBytes(t *testing.T) {
 	}
 }
 
+func TestRepeatToBytes(t *testing.T) {
+	for _, tt := range RepeatTests {
+		a := RepeatToBytes(tt.in, tt.count)
+		if !equal("RepeatToBytes(s)", string(a), tt.out, t) {
+			t.Errorf("RepeatToBytes(%v, %d) = %v; want %v", tt.in, tt.count, a, tt.out)
+			continue
+		}
+	}
+}
+
+func repeatToBytesPanicRecover(s string, count int) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			switch v := r.(type) {
+			case error:
+				err = v
+			default:
+				err = fmt.Errorf("%s", v)
+			}
+		}
+	}()
+
+	RepeatToBytes(s, count)
+
+	return
+}
+
+// See Issue golang.org/issue/16237
+func TestRepeatToBytesCatchesOverflow(t *testing.T) {
+	tests := [...]struct {
+		s      string
+		count  int
+		errStr string
+	}{
+		0: {"--", -2147483647, "negative"},
+		1: {"", int(^uint(0) >> 1), ""},
+		2: {"-", 10, ""},
+		3: {"gopher", 0, ""},
+		4: {"-", -1, "negative"},
+		5: {"--", -102, "negative"},
+		6: {string(make([]byte, 255)), int((^uint(0))/255 + 1), "overflow"},
+	}
+
+	for i, tt := range tests {
+		err := repeatToBytesPanicRecover(tt.s, tt.count)
+		if tt.errStr == "" {
+			if err != nil {
+				t.Errorf("#%d panicked %v", i, err)
+			}
+			continue
+		}
+
+		if err == nil || !strings.Contains(err.Error(), tt.errStr) {
+			t.Errorf("#%d expected %q got %q", i, tt.errStr, err)
+		}
+	}
+}

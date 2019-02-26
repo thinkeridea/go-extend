@@ -30,6 +30,19 @@ go语言扩展包，收集一些常用的操作函数，辅助更快的完成开
 	ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	7.769s
 	```
 
+	- Repeat 性能测试报告
+	
+	```
+	goos: darwin
+    goarch: amd64
+    pkg: github.com/thinkeridea/go-extend/exstrings/benchmark
+    BenchmarkRepeat-8                  	   50000	     28818 ns/op	  303104 B/op	       1 allocs/op
+    BenchmarkRepeatToBytes-8           	   50000	     28104 ns/op	  303104 B/op	       1 allocs/op
+    BenchmarkStandardLibraryRepeat-8   	   20000	     51968 ns/op	  606208 B/op	       2 allocs/op
+    PASS
+    ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	6.200s
+	```
+
 版权：
 
 所有包统一使用 `GNU General Public License v3.0` 协议，每个源码文件开头必须包含以下版权描述：

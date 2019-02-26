@@ -33,3 +33,29 @@ func Reverse(s string) string {
 func Replace(s, old, new string, n int) string {
 	return exbytes.ToString(UnsafeReplaceToBytes(s, old, new, n))
 }
+
+/*
+Repeat 返回由字符串s的计数副本组成的新字符串。
+该方法是对标准库 strings.Repeat 修改，对于创建大字符串能有效减少内存分配。
+
+如果计数为负或 len(s) * count 溢出将触发panic。
+*/
+func Repeat(s string, count int) string {
+	// Since we cannot return an error on overflow,
+	// we should panic if the repeat will generate
+	// an overflow.
+	// See Issue golang.org/issue/16237
+	if count < 0 {
+		panic("strings: negative Repeat count")
+	} else if count > 0 && len(s)*count/count != len(s) {
+		panic("strings: Repeat count causes overflow")
+	}
+
+	b := make([]byte, len(s)*count)
+	bp := copy(b, s)
+	for bp < len(b) {
+		copy(b[bp:], b[:bp])
+		bp *= 2
+	}
+	return exbytes.ToString(b)
+}

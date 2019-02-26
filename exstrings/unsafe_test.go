@@ -19,24 +19,10 @@ import (
 	"fmt"
 	"strings"
 	"testing"
-	"unicode/utf8"
 )
 
-var UnsafeRepeatTests = []struct {
-	in, out string
-	count   int
-}{
-	{"", "", 0},
-	{"", "", 1},
-	{"", "", 2},
-	{"-", "", 0},
-	{"-", "-", 1},
-	{"-", "----------", 10},
-	{"abc ", "abc abc abc ", 3},
-}
-
 func TestUnsafeRepeat(t *testing.T) {
-	for _, tt := range UnsafeRepeatTests {
+	for _, tt := range RepeatTests {
 		a := UnsafeRepeat(tt.in, tt.count)
 		if !equal("Repeat(s)", a, tt.out, t) {
 			t.Errorf("Repeat(%v, %d) = %v; want %v", tt.in, tt.count, a, tt.out)
@@ -45,7 +31,7 @@ func TestUnsafeRepeat(t *testing.T) {
 	}
 }
 
-func repeatPanicRecover(s string, count int) (err error) {
+func unsafeRepeatPanicRecover(s string, count int) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			switch v := r.(type) {
@@ -79,7 +65,7 @@ func TestUnsafeRepeatCatchesOverflow(t *testing.T) {
 	}
 
 	for i, tt := range tests {
-		err := repeatPanicRecover(tt.s, tt.count)
+		err := unsafeRepeatPanicRecover(tt.s, tt.count)
 		if tt.errStr == "" {
 			if err != nil {
 				t.Errorf("#%d panicked %v", i, err)
@@ -91,25 +77,6 @@ func TestUnsafeRepeatCatchesOverflow(t *testing.T) {
 			t.Errorf("#%d expected %q got %q", i, tt.errStr, err)
 		}
 	}
-}
-
-func equal(m string, s1, s2 string, t *testing.T) bool {
-	if s1 == s2 {
-		return true
-	}
-	e1 := strings.Split(s1, "")
-	e2 := strings.Split(s2, "")
-	for i, c1 := range e1 {
-		if i >= len(e2) {
-			break
-		}
-		r1, _ := utf8.DecodeRuneInString(c1)
-		r2, _ := utf8.DecodeRuneInString(e2[i])
-		if r1 != r2 {
-			t.Errorf("%s diff at %d: U+%04X U+%04X", m, i, r1, r2)
-		}
-	}
-	return false
 }
 
 func TestUnsafeJoin(t *testing.T) {

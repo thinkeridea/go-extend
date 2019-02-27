@@ -173,8 +173,17 @@ func TestPool_Put(t *testing.T) {
 
 	p.Put(b)
 
+	// 开启 race 时有一定概率导致 Put 被丢弃
 	pp := (*sync.Pool)(p)
-	b = pp.Get().(*bytes.Buffer)
+	for i := 0; i < 10; i++ {
+		b = pp.Get().(*bytes.Buffer)
+		if b.String() == "xx" {
+			break
+		}
+
+		p.Put(b)
+	}
+
 	if b.String() != "xx" {
 		t.Errorf("b1.String():%s != xx", b.String())
 	}

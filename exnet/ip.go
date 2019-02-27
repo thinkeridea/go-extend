@@ -16,12 +16,11 @@
 package exnet
 
 import (
+	"errors"
 	"math"
 	"net"
 	"net/http"
 	"strings"
-
-	"github.com/pkg/errors"
 )
 
 // 收集的内网网络地址 IP 段

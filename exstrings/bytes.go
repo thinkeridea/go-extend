@@ -53,7 +53,7 @@ func UnsafeReplaceToBytes(s, old, new string, n int) []byte {
 		start = j + len(old)
 	}
 	w += copy(t[w:], s[start:])
-	return t
+	return t[0:w]
 }
 
 // ReplaceToBytes 替换字符串，并返回 []byte，减少类型转换
@@ -90,7 +90,7 @@ func ReplaceToBytes(s, old, new string, n int) []byte {
 		start = j + len(old)
 	}
 	w += copy(t[w:], s[start:])
-	return t
+	return t[0:w]
 }
 
 /*

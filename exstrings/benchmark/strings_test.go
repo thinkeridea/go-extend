@@ -112,3 +112,24 @@ func BenchmarkStandardLibraryRepeat(b *testing.B) {
 		strings.Repeat("ABC", 100000)
 	}
 }
+
+func BenchmarkJoin(b *testing.B) {
+	s := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"}
+	for i := 0; i < b.N; i++ {
+		exstrings.Join(s, "-")
+	}
+}
+
+func BenchmarkJoinToBytes(b *testing.B) {
+	s := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"}
+	for i := 0; i < b.N; i++ {
+		exstrings.JoinToBytes(s, "-")
+	}
+}
+
+func BenchmarkStandardLibraryJoin(b *testing.B) {
+	s := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"}
+	for i := 0; i < b.N; i++ {
+		strings.Join(s, "-")
+	}
+}

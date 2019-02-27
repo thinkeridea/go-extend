@@ -147,3 +147,24 @@ func TestRepeatToBytesCatchesOverflow(t *testing.T) {
 		}
 	}
 }
+
+func TestJoinToBytes(t *testing.T) {
+	for _, v := range []struct {
+		in       []string
+		out, sep string
+	}{
+		{[]string{}, "", "-"},
+		{[]string{"a"}, "a", "-"},
+		{[]string{"a", "b"}, "a-b", "-"},
+		{[]string{"a", "b", "c"}, "a-b-c", "-"},
+		{[]string{"a", "b", "c", "d"}, "a-b-c-d", "-"},
+		{[]string{"a", "b", "c", "d", "e"}, "a-b-c-d-e", "-"},
+		{[]string{"a", "b", "c", "d", "e", "f"}, "a-b-c-d-e-f", "-"},
+	} {
+		a := JoinToBytes(v.in, v.sep)
+		if string(a) != v.out {
+			t.Errorf("Join(%v, %s) = %v; want %v", v.in, v.sep, v.out, string(a))
+			continue
+		}
+	}
+}

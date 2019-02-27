@@ -118,3 +118,27 @@ func RepeatToBytes(s string, count int) []byte {
 	}
 	return b
 }
+
+// JoinToBytes 使用 sep 连接 a 的字符串并返回 []byte
+// 该方法是对标准库 strings.Join 修改，配合 unsafe 包能有效减少内存分配。
+func JoinToBytes(a []string, sep string) []byte {
+	switch len(a) {
+	case 0:
+		return []byte{}
+	case 1:
+		return []byte(a[0])
+	}
+
+	n := len(sep) * (len(a) - 1)
+	for i := 0; i < len(a); i++ {
+		n += len(a[i])
+	}
+
+	b := make([]byte, n)
+	bp := copy(b, a[0])
+	for _, s := range a[1:] {
+		bp += copy(b[bp:], sep)
+		bp += copy(b[bp:], s)
+	}
+	return b
+}

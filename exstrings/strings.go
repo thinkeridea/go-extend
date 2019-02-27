@@ -43,3 +43,24 @@ Repeat 返回由字符串s的计数副本组成的新字符串。
 func Repeat(s string, count int) string {
 	return exbytes.ToString(RepeatToBytes(s, count))
 }
+
+// Join 使用 sep 连接 a 的字符串。
+// 该方法是对标准库 strings.Join 修改，配合 unsafe 包能有效减少内存分配。
+func Join(a []string, sep string) string {
+	switch len(a) {
+	case 0:
+		return ""
+	case 1:
+		return a[0]
+	case 2:
+		// Special case for common small values.
+		// Remove if golang.org/issue/6714 is fixed
+		return a[0] + sep + a[1]
+	case 3:
+		// Special case for common small values.
+		// Remove if golang.org/issue/6714 is fixed
+		return a[0] + sep + a[1] + sep + a[2]
+	}
+
+	return exbytes.ToString(JoinToBytes(a, sep))
+}

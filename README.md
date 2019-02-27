@@ -43,6 +43,19 @@ go语言扩展包，收集一些常用的操作函数，辅助更快的完成开
     ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	6.200s
 	```
 
+	- Join 性能测试报告
+	
+	```
+	goos: darwin
+    goarch: amd64
+    pkg: github.com/thinkeridea/go-extend/exstrings/benchmark
+    BenchmarkJoin-8                  	 5000000	       290 ns/op	      64 B/op	       1 allocs/op
+    BenchmarkJoinToBytes-8           	 5000000	       290 ns/op	      64 B/op	       1 allocs/op
+    BenchmarkStandardLibraryJoin-8   	 5000000	       315 ns/op	     128 B/op	       2 allocs/op
+    PASS
+    ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	5.406s
+	```
+
 版权：
 
 所有包统一使用 `GNU General Public License v3.0` 协议，每个源码文件开头必须包含以下版权描述：

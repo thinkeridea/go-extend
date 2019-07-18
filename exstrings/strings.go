@@ -28,6 +28,25 @@ func Reverse(s string) string {
 	return string(r)
 }
 
+// ReverseASCII 反转字符串, 只支持单字节编码，可以提供更快的反转
+func ReverseASCII(s string) string {
+	b := []byte(s)
+	for i, j := 0, len(b)-1; i < len(b)/2; i, j = i+1, j-1 {
+		b[i], b[j] = b[j], b[i]
+	}
+	return exbytes.ToString(b)
+}
+
+// UnsafeReverseASCII 反转字符串, 只支持单字节编码，不支持字面量字符串，
+// 原地反转字符串，可以提供更快的性能，但需要注意安全。
+func UnsafeReverseASCII(s string) string {
+	b := UnsafeToBytes(s)
+	for i, j := 0, len(b)-1; i < len(b)/2; i, j = i+1, j-1 {
+		b[i], b[j] = b[j], b[i]
+	}
+	return exbytes.ToString(b)
+}
+
 // Replace 替换字符串
 // 该方法是对标准库 strings.Replace 修改，配合 unsafe 包能有效减少内存分配。
 func Replace(s, old, new string, n int) string {

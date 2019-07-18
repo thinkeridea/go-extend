@@ -38,6 +38,40 @@ func TestReverse(t *testing.T) {
 	}
 }
 
+func TestReverseASCII(t *testing.T) {
+	cases := []struct {
+		in, want string
+	}{
+		{"Hello, world", "dlrow ,olleH"},
+		{"", ""},
+	}
+	for _, c := range cases {
+		got := ReverseASCII(c.in)
+		if got != c.want {
+			t.Errorf("Reverse(%q) == %q, want %q", c.in, got, c.want)
+		}
+	}
+}
+
+func TestUnsafeReverseASCII(t *testing.T) {
+	cases := []struct {
+		in, want string
+	}{
+		{fmt.Sprint("Hello, world"), "dlrow ,olleH"},
+		{fmt.Sprint(""), ""},
+	}
+	for _, c := range cases {
+		got := UnsafeReverseASCII(c.in)
+		if got != c.want {
+			t.Errorf("Reverse(%q) == %q, want %q", c.in, got, c.want)
+		}
+
+		if c.in != c.want {
+			t.Errorf("c.in == %q, want %q", c.in, c.want)
+		}
+	}
+}
+
 func TestReplace(t *testing.T) {
 	var ReplaceTests = []struct {
 		in       string

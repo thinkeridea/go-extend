@@ -61,3 +61,10 @@ func Replace(s, old, new []byte, n int) []byte {
 	w += copy(s[w:], s[i:])
 	return s[0:w]
 }
+
+// Reverse 原地反转 []byte
+func Reverse(s []byte) {
+	for i, j := 0, len(s)-1; i < len(s)/2; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+}

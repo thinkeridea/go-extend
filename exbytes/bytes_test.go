@@ -16,6 +16,7 @@
 package exbytes
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -56,5 +57,14 @@ func TestReplace(t *testing.T) {
 		if s := string(out); s != tt.out {
 			t.Errorf("Replace(%q, %q, %q, %d) = %q, want %q", tt.in, tt.old, tt.new, tt.n, s, tt.out)
 		}
+	}
+}
+
+func TestReverse(t *testing.T) {
+	s := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	Reverse(s)
+
+	if !reflect.DeepEqual(s, []byte{9, 8, 7, 6, 5, 4, 3, 2, 1}) {
+		t.Errorf("Reverse(%q) = %q, want %q", []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}, s, []byte{9, 8, 7, 6, 5, 4, 3, 2, 1})
 	}
 }

@@ -23,51 +23,27 @@ import (
 	"strings"
 )
 
-// 收集的内网网络地址 IP 段
-var localNetworks []*net.IPNet
-
-func init() {
-	localNetworks = make([]*net.IPNet, 19)
-	for i, sNetwork := range []string{
-		"10.0.0.0/8",
-		"169.254.0.0/16",
-		"172.16.0.0/12",
-		"172.17.0.0/12",
-		"172.18.0.0/12",
-		"172.19.0.0/12",
-		"172.20.0.0/12",
-		"172.21.0.0/12",
-		"172.22.0.0/12",
-		"172.23.0.0/12",
-		"172.24.0.0/12",
-		"172.25.0.0/12",
-		"172.26.0.0/12",
-		"172.27.0.0/12",
-		"172.28.0.0/12",
-		"172.29.0.0/12",
-		"172.30.0.0/12",
-		"172.31.0.0/12",
-		"192.168.0.0/16",
-	} {
-		_, network, _ := net.ParseCIDR(sNetwork)
-		localNetworks[i] = network
-	}
-}
-
 // HasLocalIPddr 检测 IP 地址字符串是否是内网地址
 func HasLocalIPddr(ip string) bool {
 	return HasLocalIP(net.ParseIP(ip))
 }
 
 // HasLocalIP 检测 IP 地址是否是内网地址
+// 通过直接对比ip段范围效率更高，详见：https://github.com/thinkeridea/go-extend/issues/2
 func HasLocalIP(ip net.IP) bool {
-	for _, network := range localNetworks {
-		if network.Contains(ip) {
-			return true
-		}
+	if ip.IsLoopback() {
+		return true
 	}
 
-	return ip.IsLoopback()
+	ip4 := ip.To4()
+	if ip4 == nil {
+		return false
+	}
+
+	return ip4[0] == 10 || // 10.0.0.0/8
+		(ip4[0] == 172 && ip4[1] >= 16 && ip4[1] <= 31) || // 172.16.0.0/12
+		(ip4[0] == 169 && ip4[1] == 254) || // 169.254.0.0/16
+		(ip4[0] == 192 && ip4[1] == 168) // 192.168.0.0/16
 }
 
 // ClientIP 尽最大努力实现获取客户端 IP 的算法。

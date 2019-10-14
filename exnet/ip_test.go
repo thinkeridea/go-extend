@@ -23,29 +23,31 @@ import (
 
 func TestHasLocalIPddr(t *testing.T) {
 	for ipString, expected := range map[string]bool{
-		"127.0.0.1":    true,
-		"::1":          true,
-		"182.56.9.18":  false,
-		"192.168.9.18": true,
-		"10.168.9.18":  true,
-		"11.168.9.18":  false,
-		"172.16.9.18":  true,
-		"172.17.9.18":  true,
-		"172.18.9.18":  true,
-		"172.19.9.18":  true,
-		"172.20.9.18":  true,
-		"172.21.9.18":  true,
-		"172.22.9.18":  true,
-		"172.23.9.18":  true,
-		"172.24.9.18":  true,
-		"172.25.9.18":  true,
-		"172.26.9.18":  true,
-		"172.27.9.18":  true,
-		"172.28.9.18":  true,
-		"172.29.9.18":  true,
-		"172.30.9.18":  true,
-		"172.31.9.18":  true,
-		"172.32.9.18":  false,
+		"":                   false,
+		"invalid ip address": false,
+		"127.0.0.1":          true,
+		"::1":                true,
+		"182.56.9.18":        false,
+		"192.168.9.18":       true,
+		"10.168.9.18":        true,
+		"11.168.9.18":        false,
+		"172.16.9.18":        true,
+		"172.17.9.18":        true,
+		"172.18.9.18":        true,
+		"172.19.9.18":        true,
+		"172.20.9.18":        true,
+		"172.21.9.18":        true,
+		"172.22.9.18":        true,
+		"172.23.9.18":        true,
+		"172.24.9.18":        true,
+		"172.25.9.18":        true,
+		"172.26.9.18":        true,
+		"172.27.9.18":        true,
+		"172.28.9.18":        true,
+		"172.29.9.18":        true,
+		"172.30.9.18":        true,
+		"172.31.9.18":        true,
+		"172.32.9.18":        false,
 	} {
 		if HasLocalIPddr(ipString) != expected {
 			t.Errorf("ip %s", ipString)
@@ -55,29 +57,31 @@ func TestHasLocalIPddr(t *testing.T) {
 
 func TestHasLocalIP(t *testing.T) {
 	for ipString, expected := range map[string]bool{
-		"127.0.0.1":    true,
-		"::1":          true,
-		"182.56.9.18":  false,
-		"192.168.9.18": true,
-		"10.168.9.18":  true,
-		"11.168.9.18":  false,
-		"172.16.9.18":  true,
-		"172.17.9.18":  true,
-		"172.18.9.18":  true,
-		"172.19.9.18":  true,
-		"172.20.9.18":  true,
-		"172.21.9.18":  true,
-		"172.22.9.18":  true,
-		"172.23.9.18":  true,
-		"172.24.9.18":  true,
-		"172.25.9.18":  true,
-		"172.26.9.18":  true,
-		"172.27.9.18":  true,
-		"172.28.9.18":  true,
-		"172.29.9.18":  true,
-		"172.30.9.18":  true,
-		"172.31.9.18":  true,
-		"172.32.9.18":  false,
+		"":                   false,
+		"invalid ip address": false,
+		"127.0.0.1":          true,
+		"::1":                true,
+		"182.56.9.18":        false,
+		"192.168.9.18":       true,
+		"10.168.9.18":        true,
+		"11.168.9.18":        false,
+		"172.16.9.18":        true,
+		"172.17.9.18":        true,
+		"172.18.9.18":        true,
+		"172.19.9.18":        true,
+		"172.20.9.18":        true,
+		"172.21.9.18":        true,
+		"172.22.9.18":        true,
+		"172.23.9.18":        true,
+		"172.24.9.18":        true,
+		"172.25.9.18":        true,
+		"172.26.9.18":        true,
+		"172.27.9.18":        true,
+		"172.28.9.18":        true,
+		"172.29.9.18":        true,
+		"172.30.9.18":        true,
+		"172.31.9.18":        true,
+		"172.32.9.18":        false,
 	} {
 		if HasLocalIP(net.ParseIP(ipString)) != expected {
 			t.Errorf("ip %s", ipString)
@@ -200,6 +204,17 @@ func TestIPString2Long(t *testing.T) {
 			t.Errorf("ip:%s long:%d != expected:%d", v.ip, v.long, expected)
 		}
 	}
+
+	for _, ip := range []string{
+		"",
+		"invalid ip address",
+		"::1",
+	} {
+		_, err := IPString2Long(ip)
+		if err == nil {
+			t.Errorf("ip:%s invalid IP passes", ip)
+		}
+	}
 }
 
 func TestLong2IPString(t *testing.T) {
@@ -219,6 +234,14 @@ func TestLong2IPString(t *testing.T) {
 
 		if expected != v.ip {
 			t.Errorf(" long:%d ip:%s != expected:%s", v.long, v.ip, expected)
+		}
+	}
+
+	// 在64位机器上运行，否者输入值将超过限制
+	if 32<<(^uint(0)>>63) == 64 {
+		_, err := Long2IPString(1<<64 - 1)
+		if err == nil {
+			t.Errorf("long:%d out of range", uint64(1<<64-1))
 		}
 	}
 }
@@ -242,6 +265,17 @@ func TestIP2Long(t *testing.T) {
 			t.Errorf("ip:%s long:%d != expected:%d", v.ip, v.long, expected)
 		}
 	}
+
+	for _, ip := range []string{
+		"",
+		"invalid ip address",
+		"::1",
+	} {
+		_, err := IP2Long(net.ParseIP(ip))
+		if err == nil {
+			t.Errorf("ip:%s invalid IP passes", ip)
+		}
+	}
 }
 
 func TestLong2IP(t *testing.T) {
@@ -261,6 +295,14 @@ func TestLong2IP(t *testing.T) {
 
 		if expected.String() != v.ip {
 			t.Errorf(" long:%d ip:%s != expected:%s", v.long, v.ip, expected.String())
+		}
+	}
+
+	// 在64位机器上运行，否者输入值将超过限制
+	if 32<<(^uint(0)>>63) == 64 {
+		_, err := Long2IP(1<<64 - 1)
+		if err == nil {
+			t.Errorf("long:%d out of range", uint64(1<<64-1))
 		}
 	}
 }

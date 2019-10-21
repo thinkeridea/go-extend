@@ -83,3 +83,12 @@ func Join(a []string, sep string) string {
 
 	return exbytes.ToString(JoinToBytes(a, sep))
 }
+
+// Copy 拷贝一个字符串，在截取字符串之后，我们得到一个大字符串的引用，这会导致内存泄漏。
+// 如果我们引用一个较大字符串的子串，建议进行 copy 以便 GC 可以快速回收大字符串。
+// 例如: exstrings.Copy(s[10:50])  这会得到一个子串的拷贝，原字符串不使用可以被 GC 回收。
+func Copy(src string) string {
+	buf := make([]byte, len(src))
+	copy(buf, src)
+	return exbytes.ToString(buf)
+}

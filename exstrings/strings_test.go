@@ -17,9 +17,11 @@ package exstrings
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 	"testing"
 	"unicode/utf8"
+	"unsafe"
 )
 
 func TestReverse(t *testing.T) {
@@ -214,5 +216,22 @@ func TestJoin(t *testing.T) {
 			t.Errorf("Join(%v, %s) = %v; want %v", v.in, v.sep, v.out, a)
 			continue
 		}
+	}
+}
+
+func TestCopy(t *testing.T) {
+	testString := "Go语言是Google开发的一种静态强类型、编译型、并发型，并具有垃圾回收功能的编程语言。为了方便搜索和识别，有时会将其称为Golang。"
+
+	var s string
+	s = Copy(testString[:119])
+	if s != "Go语言是Google开发的一种静态强类型、编译型、并发型，并具有垃圾回收功能的编程语言。" {
+		t.Errorf("Copy(testString[:119]) = %v; want %v", s, "Go语言是Google开发的一种静态强类型、编译型、并发型，并具有垃圾回收功能的编程语言。")
+	}
+
+	a := (*reflect.StringHeader)(unsafe.Pointer(&testString))
+	b := (*reflect.StringHeader)(unsafe.Pointer(&s))
+
+	if a.Data == b.Data {
+		t.Errorf("testString pointer address == s pointer address")
 	}
 }

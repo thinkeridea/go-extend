@@ -16,16 +16,26 @@
 package exstrings
 
 import (
+	"unicode/utf8"
+
 	"github.com/thinkeridea/go-extend/exbytes"
 )
 
 // Reverse 反转字符串，通过 https://golang.org/doc/code.html#Library 收集
+// 使用 utf8.DecodeRuneInString 改进性能，请见：https://github.com/thinkeridea/go-extend/issues/5
 func Reverse(s string) string {
-	r := []rune(s)
-	for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
-		r[i], r[j] = r[j], r[i]
+	var start, size, end int
+	n := len(s)
+	buf := make([]byte, n)
+	for i := 0; i < len(s[start:]); {
+		_, size = utf8.DecodeRuneInString(s[start:])
+		n -= size
+		end = start + size
+		copy(buf[n:], s[start:end])
+		start = end
 	}
-	return string(r)
+
+	return exbytes.ToString(buf)
 }
 
 // ReverseASCII 反转字符串, 只支持单字节编码，可以提供更快的反转

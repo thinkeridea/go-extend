@@ -25,13 +25,11 @@ import (
 // 使用 utf8.DecodeRuneInString 改进性能，请见：https://github.com/thinkeridea/go-extend/issues/5
 func Reverse(s string) string {
 	var start, size, end int
-	n := len(s)
-	buf := make([]byte, n)
-	for i := 0; i < len(s[start:]); {
+	buf := make([]byte, len(s))
+	for end < len(s) {
 		_, size = utf8.DecodeRuneInString(s[start:])
-		n -= size
 		end = start + size
-		copy(buf[n:], s[start:end])
+		copy(buf[len(buf)-end:], s[start:end])
 		start = end
 	}
 

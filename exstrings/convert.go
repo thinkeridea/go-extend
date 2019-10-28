@@ -70,3 +70,18 @@ func UnsafeToBytes(s string) []byte {
 		Cap:  strHeader.Len,
 	}))
 }
+
+/*
+Bytes 把字符串转换成 []byte 类型，和 []byte(s) 操作结果一致，但是效率更高。
+
+我进行了性能测试，它相比 []byte(s) 性能提升大约 14%，这仅仅是个实验的函数，它可能随着编译器优化而失去性能优势。
+极端性能情况下依然可以使用它，它永远和 []byte(s) 的结果一致。
+
+	BenchmarkStandardLibraryStringToBytes-8         18584335                58.4 ns/op           192 B/op          1 allocs/op
+	BenchmarkExstringsStringToBytes-8               23752122                50.1 ns/op           192 B/op          1 allocs/op
+*/
+func Bytes(s string) []byte {
+	buf := make([]byte, len(s))
+	copy(buf, s)
+	return buf
+}

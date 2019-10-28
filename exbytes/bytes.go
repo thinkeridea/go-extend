@@ -17,6 +17,8 @@ package exbytes
 
 import (
 	"bytes"
+
+	"github.com/thinkeridea/go-extend/exunicode/exutf8"
 )
 
 /*
@@ -67,4 +69,16 @@ func Reverse(s []byte) {
 	for i, j := 0, len(s)-1; i < len(s)/2; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
+}
+
+// Sub 是 exutf8.RuneSub 的别名，提供字符数量截取字节数组的方法，针对多字节字符安全高效的截取
+// 如果 start 是非负数，返回的字符串将从 string 的 start 位置开始，从 0 开始计算。例如，在字符串 “abcdef” 中，在位置 0 的字符是 “a”，位置 2 的字符串是 “c” 等等。
+// 如果 start 是负数，返回的字符串将从 string 结尾处向前数第 start 个字符开始。
+// 如果 string 的长度小于 start，将返回空字符串。
+//
+// 如果提供了正数的 length，返回的字符串将从 start 处开始最多包括 length 个字符（取决于 string 的长度）。
+// 如果提供了负数的 length，那么 string 末尾处的 length 个字符将会被省略（若 start 是负数则从字符串尾部算起）。如果 start 不在这段文本中，那么将返回空字符串。
+// 如果提供了值为 0 的 length，返回的子字符串将从 start 位置开始直到字符串结尾。
+func Sub(p []byte, start, length int) []byte {
+	return exutf8.RuneSub(p, start, length)
 }

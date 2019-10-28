@@ -68,3 +68,28 @@ func TestReverse(t *testing.T) {
 		t.Errorf("Reverse(%q) = %q, want %q", []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}, s, []byte{9, 8, 7, 6, 5, 4, 3, 2, 1})
 	}
 }
+
+func TestSub(t *testing.T) {
+	s := "Go（又称Golang）是Google开发的一种静态强类型、编译型、并发型，并具有垃圾回收功能的编程语言"
+	for _, tt := range []struct {
+		start, length int
+		in, out       string
+	}{
+		{-1, 0, s, "言"},
+		{-2, 0, s, "语言"},
+		{-3, 1, s, "程"},
+		{-3, -1, s, "程语"},
+		{0, -1, s, "Go（又称Golang）是Google开发的一种静态强类型、编译型、并发型，并具有垃圾回收功能的编程语"},
+		{2, -1, s, "（又称Golang）是Google开发的一种静态强类型、编译型、并发型，并具有垃圾回收功能的编程语"},
+		{52, 52, s, ""},
+		{3, 5, s, "又称Gol"},
+		{1, 0, s, "o（又称Golang）是Google开发的一种静态强类型、编译型、并发型，并具有垃圾回收功能的编程语言"},
+		{0, 10000, "", ""},
+		{-10000, 10000, s, ""},
+		{0, -10000, s, ""},
+	} {
+		if out := Sub([]byte(tt.in), tt.start, tt.length); string(out) != tt.out {
+			t.Errorf("RuneSub(%q, %d, %d) = %s, want %s", tt.in, tt.start, tt.length, out, tt.out)
+		}
+	}
+}

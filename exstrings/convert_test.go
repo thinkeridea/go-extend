@@ -52,3 +52,15 @@ func TestUnsafeToBytes(t *testing.T) {
 		t.Fatalf("string(b)=%s s=%s", string(b), s)
 	}
 }
+
+func TestBytes(t *testing.T) {
+	for _, in := range []string{
+		"abcd",
+		"☺☻☹",
+		"☺☻☹",
+	} {
+		if p := Bytes(in); !reflect.DeepEqual(p, []byte(in)) {
+			t.Fatalf("Bytes(%s)=%q want %q", in, p, []byte(in))
+		}
+	}
+}

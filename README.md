@@ -1,19 +1,31 @@
+# go-extend 
+
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/thinkeridea/go-extend)
 [![Build Status](https://travis-ci.org/thinkeridea/go-extend.svg?branch=master)](https://travis-ci.org/thinkeridea/go-extend)
 [![codecov](https://codecov.io/gh/thinkeridea/go-extend/branch/master/graph/badge.svg)](https://codecov.io/gh/thinkeridea/go-extend)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thinkeridea/go-extend)](https://goreportcard.com/report/github.com/thinkeridea/go-extend)
 
-# go-extend 收集一些常用的操作函数，辅助更快的完成开发工作，并减少重复代码
+go-extend 收集一些常用的操作函数，辅助更快的完成开发工作，并减少重复代码。
 
 它收集各种杂项函数，并进行归类，方便使用者查找，它可以大幅度提升开发效率和程序运行性能。它以保证性能为最大前提，提供有效的方法。
 针对一些标准库中的函数或者库进行一些修改，使其性能大幅度提升，但它并不用来替换标准库函数，这些函数往往会在一些场景下有效，但有些函数可以用来替换标准库函数，它们保持一致的功能，且相当安全。
 
 一些包或者函数使用示例及分析可以在我的 [博客(https://blog.thinkeridea.com)](https://blog.thinkeridea.com) 中找到。
 
+## 安装
+
+```shell
+$ go get  github.com/thinkeridea/go-extend/...
+```
+
 ## 规范:
 	
 - 与标准库包名一致的使用 `ex` 前缀， 避免与标准库包冲突
 - 包目录下 `doc.go` 作为包说明文档
+
+## 性能测试
+
+包中一些函数会进行性能测试，包括每次修订的性能对比，它们一般位于各自包下面的 `benchmark` 目录下，性能测试结果可以在 [benchmark.md](benchmark.md) 快速浏览。
 
 ## 标准库函数改进列表
 
@@ -40,13 +52,16 @@
 - [exbytes.ToString](https://godoc.org/github.com/thinkeridea/go-extend/exbytes#ToString) 结合 `unsafe` 使 `[]byte` 转 `string` 没有成本
 - [exbytes.Replace](https://godoc.org/github.com/thinkeridea/go-extend/exbytes#Replace) 它使用原地替换，直接修改输入的数据，获得更好的性能
 - [exbytes.Reverse](https://godoc.org/github.com/thinkeridea/go-extend/exbytes#Reverse) 原地反转 []byte
+- [exbytes.Sub](https://godoc.org/github.com/thinkeridea/go-extend/exbytes#Sub) 是 [exutf8.RuneSub](https://godoc.org/github.com/thinkeridea/go-extend/exunicode/exutf8#RuneSub) 的别名，提供字符数量截取字节数组的方法
 
 ### [exstrings](https://godoc.org/github.com/thinkeridea/go-extend/exstrings)
 
 标准库 `strings` 的扩展包，提供一些高效的 `string` 操作方法。
 
 - [exstrings.UnsafeToBytes](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#UnsafeToBytes) 结合 `unsafe` 使 `string` 转 `[]byte` 没有成本，但是字面量字符串转换后不可修改，否则会出现严重错误
+- [exstrings.Bytes](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#Bytes) 把字符串转换成 []byte 类型，和 []byte(s) 操作结果一致，但是效率更高
 - [exstrings.Copy](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#Copy) 拷贝一个字符串，在截取字符串之后，避免得到大字符串引用导致内存泄漏
+- [exstrings.SubString](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#SubString) 是 [exutf8.RuneSubString](https://godoc.org/github.com/thinkeridea/go-extend/exunicode/exutf8#RuneSubString) 的别名，根据字符数量截取字符串的方法
 - [exstrings.Join](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#Join) 该方法是对标准库 strings.Join 修改，配合 unsafe 包能有效减少内存分配
 - [exstrings.JoinToBytes](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#JoinToBytes) 它响应一个 `[]byte` 类型，有效避免类型转换
 - [exstrings.Repeat](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#Repeat) 该方法是对标准库 strings.Repeat 修改，对于创建大字符串能有效减少内存分配
@@ -84,7 +99,7 @@
 
 ### [exnet](https://godoc.org/github.com/thinkeridea/go-extend/exnet)
 
-标准库 `exnet` 的扩展包，提供一些常用的操作函数。
+标准库 `net` 的扩展包，提供一些常用的操作函数。
 
 - [exnet.HasLocalIPddr](https://godoc.org/github.com/thinkeridea/go-extend/exnet#HasLocalIPddr) 检查一个ip是否是内网ip
 - [exnet.HasLocalIP](https://godoc.org/github.com/thinkeridea/go-extend/exnet#HasLocalIP) 检查一个ip对象是否是内网ip
@@ -95,6 +110,15 @@
 - [exnet.IP2Long](https://godoc.org/github.com/thinkeridea/go-extend/exnet#IP2Long) 把net.IP转为数值
 - [exnet.Long2IPString](https://godoc.org/github.com/thinkeridea/go-extend/exnet#Long2IPString) 把数值转为ip字符串
 - [exnet.Long2IP](https://godoc.org/github.com/thinkeridea/go-extend/exnet#Long2IP) 把数值转为net.IP
+
+### [exutf8](https://godoc.org/github.com/thinkeridea/go-extend/exunicode/exutf8)
+
+标准库 `utf8` 的扩展包，提供一些高效处理多字节字符的方法。
+
+- [exutf8.RuneIndex](https://godoc.org/github.com/thinkeridea/go-extend/exunicode/exutf8#RuneIndex) 计算指定字符数量的字节索引位置 
+- [exutf8.RuneIndexInString](https://godoc.org/github.com/thinkeridea/go-extend/exunicode/exutf8#RuneIndexInString) 计算指定字符数量的字符串索引位置
+- [exutf8.RuneSub](https://godoc.org/github.com/thinkeridea/go-extend/exunicode/exutf8#RuneSub) 多字节字符截取方法
+- [exutf8.RuneSubString](https://godoc.org/github.com/thinkeridea/go-extend/exunicode/exutf8#RuneSubString) 多字节字符串截取
 
 ### [exatomic](https://godoc.org/github.com/thinkeridea/go-extend/exatomic)
 
@@ -150,50 +174,6 @@
 - [Record.ArrayJoin](https://godoc.org/github.com/thinkeridea/go-extend/datalog#Record.ArrayJoin) 使用 sep 连接 Record，其结果作为数组字段的值
 - [Record.ArrayFieldJoin](https://godoc.org/github.com/thinkeridea/go-extend/datalog#Record.ArrayFieldJoin) 使用 fieldSep 连接 Record，其结果作为一个数组的单元
 - [Record.UnsafeArrayFieldJoin](https://godoc.org/github.com/thinkeridea/go-extend/datalog#Record.UnsafeArrayFieldJoin)   使用 fieldSep 连接 Record，其结果作为一个数组的单元，会使用 `unsafe` 包减少内存分配
-
-## 标准库函数改进性能测试：
-
-- [exstrings](exstrings/)
-
-	- Replace 系列函数测试报告
-
-	```
-	goos: darwin
-	goarch: amd64
-	pkg: github.com/thinkeridea/go-extend/exstrings/benchmark
-	BenchmarkReplace-8                  	  500000	      3256 ns/op	     960 B/op	      15 allocs/op
-	BenchmarkReplaceToBytes-8           	  500000	      3283 ns/op	    1024 B/op	      16 allocs/op
-	BenchmarkUnsafeReplaceToBytes-8     	  500000	      3041 ns/op	     960 B/op	      15 allocs/op
-	BenchmarkStandardLibraryReplace-8   	  500000	      3679 ns/op	    1920 B/op	      30 allocs/op
-	PASS
-	ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	7.769s
-	```
-
-	- Repeat 性能测试报告
-	
-	```
-	goos: darwin
-    goarch: amd64
-    pkg: github.com/thinkeridea/go-extend/exstrings/benchmark
-    BenchmarkRepeat-8                  	   50000	     28818 ns/op	  303104 B/op	       1 allocs/op
-    BenchmarkRepeatToBytes-8           	   50000	     28104 ns/op	  303104 B/op	       1 allocs/op
-    BenchmarkStandardLibraryRepeat-8   	   20000	     51968 ns/op	  606208 B/op	       2 allocs/op
-    PASS
-    ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	6.200s
-	```
-
-	- Join 性能测试报告
-	
-	```
-	goos: darwin
-    goarch: amd64
-    pkg: github.com/thinkeridea/go-extend/exstrings/benchmark
-    BenchmarkJoin-8                  	 5000000	       290 ns/op	      64 B/op	       1 allocs/op
-    BenchmarkJoinToBytes-8           	 5000000	       290 ns/op	      64 B/op	       1 allocs/op
-    BenchmarkStandardLibraryJoin-8   	 5000000	       315 ns/op	     128 B/op	       2 allocs/op
-    PASS
-    ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	5.406s
-	```
 
 ## 许可
 

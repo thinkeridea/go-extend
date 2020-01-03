@@ -64,3 +64,10 @@ func TestBytes(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkUnsafeToBytes(b *testing.B) {
+	str := strings.Repeat("abc", 128)
+	for i := 0; i < b.N; i++ {
+		UnsafeToBytes(str)
+	}
+}

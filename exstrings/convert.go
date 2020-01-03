@@ -15,10 +15,7 @@
 
 package exstrings
 
-import (
-	"reflect"
-	"unsafe"
-)
+import "unsafe"
 
 /*
 UnsafeToBytes 把 string 转换为 []byte 没有多余的内存开销。
@@ -63,12 +60,12 @@ UnsafeToBytes 把 string 转换为 []byte 没有多余的内存开销。
 当然还有更多的使用方法，可以极大的提升我们程序的性能。
 */
 func UnsafeToBytes(s string) []byte {
-	strHeader := (*reflect.StringHeader)(unsafe.Pointer(&s))
-	return *(*[]byte)(unsafe.Pointer(&reflect.SliceHeader{
-		Data: strHeader.Data,
-		Len:  strHeader.Len,
-		Cap:  strHeader.Len,
-	}))
+	return *(*[]byte)(unsafe.Pointer(
+		&struct {
+			string
+			Cap int
+		}{s, len(s)},
+	))
 }
 
 /*

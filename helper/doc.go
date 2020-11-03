@@ -1,17 +1,5 @@
-// Copyright (C) 2018  Qi Yin <qiyin@thinkeridea.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// MIT License
+// Copyright (c) 2020 Qi Yin <qiyin@thinkeridea.com>
 
 // Package helper 收集一些可以辅助我们快速编程的方法，让我们极快的编写出自己的应用程序。
 // 一些脚手架函数在特殊的情况让我少处理很多程序问题，还能标准化我们编写程序的方式，我认为这是极好的。

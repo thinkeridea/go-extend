@@ -1,17 +1,5 @@
-// Copyright (C) 2018  Qi Yin <qiyin@thinkeridea.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// MIT License
+// Copyright (c) 2020 Qi Yin <qiyin@thinkeridea.com>
 
 // Package exbytes 收集常规的 []byte 操作，作为 go 标准库 bytes 的扩展。
 // 避免重复编写 []byte 相关操作代码，集中在一起更有利于优化代码，保证代码质量。

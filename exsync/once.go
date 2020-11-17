@@ -62,7 +62,7 @@ func (o *Once) Do(f func() interface{}) interface{} {
 	return o.v
 }
 
-// OncePointer 性能方面略好于 Once，单不会有太大改善，依然落后于 sync.Once， 在某些场景下可以使用，更推荐使用 Once
+// OncePointer 性能方面略好于 Once，但不会有太大改善，依然落后于 sync.Once， 在某些场景下可以使用，更推荐使用 Once
 type OncePointer struct {
 	once sync.Once
 	v    unsafe.Pointer

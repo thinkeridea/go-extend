@@ -2,7 +2,7 @@
 
 ## [exstrings](exstrings/) 包
 
-- [exstrings.Replace](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#Replace)
+- [exstrings.Replace](https://pkg.go.dev/github.com/thinkeridea/go-extend/exstrings#Replace)
 
 ```shell
 goos: darwin
@@ -16,7 +16,7 @@ PASS
 ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	7.769s
 ```
 
-- [exstrings.Repeat](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#Repeat)
+- [exstrings.Repeat](https://pkg.go.dev/github.com/thinkeridea/go-extend/exstrings#Repeat)
 
 ```shell
 goos: darwin
@@ -29,7 +29,7 @@ PASS
 ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	6.200s
 ```
 
-- [exstrings.Join](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#Join)
+- [exstrings.Join](https://pkg.go.dev/github.com/thinkeridea/go-extend/exstrings#Join)
 
 ```shell
 goos: darwin
@@ -41,8 +41,8 @@ BenchmarkStandardLibraryJoin-8   	 5000000	       315 ns/op	     128 B/op	      
 PASS
 ok  	github.com/thinkeridea/go-extend/exstrings/benchmark	5.406s
 ```
- 
-- [exstrings.Reverse](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#Reverse)
+
+- [exstrings.Reverse](https://pkg.go.dev/github.com/thinkeridea/go-extend/exstrings#Reverse)
 
 `BenchmarkReverseUTF8DecodeRuneInString` 是 `BenchmarkExstringsReverse` 优化前的版本
 
@@ -58,7 +58,7 @@ PASS
 ok      github.com/thinkeridea/go-extend/exstrings/benchmark    8.030s
 ```
 
-- [exstrings.Bytes](https://godoc.org/github.com/thinkeridea/go-extend/exstrings#Bytes)
+- [exstrings.Bytes](https://pkg.go.dev/github.com/thinkeridea/go-extend/exstrings#Bytes)
 
 ```shell
 goos: darwin
@@ -70,9 +70,9 @@ PASS
 ok      github.com/thinkeridea/go-extend/exstrings/benchmark    2.395s
 ```
 
-## [exbytes](https://godoc.org/github.com/thinkeridea/go-extend/exbytes) 包
+## [exbytes](https://pkg.go.dev/github.com/thinkeridea/go-extend/exbytes) 包
 
-- [exbytes.Replace](https://godoc.org/github.com/thinkeridea/go-extend/exbytes#Replace)
+- [exbytes.Replace](https://pkg.go.dev/github.com/thinkeridea/go-extend/exbytes#Replace)
 
 ```shell
 goos: darwin
@@ -86,9 +86,9 @@ PASS
 ok      github.com/thinkeridea/go-extend/exbytes/benchmark      4.695s
 ```
 
-## [exutf8](https://godoc.org/github.com/thinkeridea/go-extend/exunicode/exutf8) 包
+## [exutf8](https://pkg.go.dev/github.com/thinkeridea/go-extend/exunicode/exutf8) 包
 
-- [exutf8.RuneSubString](https://godoc.org/github.com/thinkeridea/go-extend/exunicode/exutf8#RuneSubString)
+- [exutf8.RuneSubString](https://pkg.go.dev/github.com/thinkeridea/go-extend/exunicode/exutf8#RuneSubString)
 
 ```shell
 goos: darwin

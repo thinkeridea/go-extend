@@ -196,4 +196,4 @@ $ go get  github.com/thinkeridea/go-extend/...
 
 ## 许可
 
-go-extend 根据 [GNU General Public License v3.0](https://www.gnu.org/licenses/) 许可证授权，有关完整许可证文本，请参阅 [LICENSE](LICENSE)
+go-extend 根据 MIT License 许可证授权，有关完整许可证文本，请参阅 [LICENSE](LICENSE)

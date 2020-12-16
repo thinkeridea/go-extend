@@ -85,17 +85,8 @@ var acceptRanges = [16]acceptRange{
 // 如果 n 超过 p 中字符的数量，则第二个参数返回 false
 // 错误的或短的编码被当做宽度为一个字节的单一字符。
 func RuneIndex(p []byte, n int) (int, bool) {
-	if n <= 0 {
-		return 0, true
-	}
-
 	var i int
-	for i < len(p) {
-		if n <= 0 {
-			break
-		}
-
-		n--
+	for ; n > 0 && i < len(p); n-- {
 		if p[i] < utf8.RuneSelf {
 			// ASCII fast path
 			i++
@@ -124,10 +115,6 @@ func RuneIndex(p []byte, n int) (int, bool) {
 			size = 1
 		}
 		i += size
-
-		if n <= 0 {
-			break
-		}
 	}
 
 	return i, n <= 0
@@ -137,17 +124,8 @@ func RuneIndex(p []byte, n int) (int, bool) {
 // 如果 n 超过 s 中字符的数量，则第二个参数返回 false
 // 错误的或短的编码被当做宽度为一个字节的单一字符。
 func RuneIndexInString(s string, n int) (int, bool) {
-	if n <= 0 {
-		return 0, true
-	}
-
 	var i int
-	for i < len(s) {
-		if n <= 0 {
-			break
-		}
-
-		n--
+	for ; n > 0 && i < len(s); n-- {
 		if s[i] < utf8.RuneSelf {
 			// ASCII fast path
 			i++
@@ -176,10 +154,6 @@ func RuneIndexInString(s string, n int) (int, bool) {
 			size = 1
 		}
 		i += size
-
-		if n <= 0 {
-			break
-		}
 	}
 
 	return i, n <= 0

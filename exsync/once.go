@@ -93,4 +93,3 @@ func (o *OncePointer) Do(f func() unsafe.Pointer) unsafe.Pointer {
 
 	return o.v
 }
-

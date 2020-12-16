@@ -9,7 +9,7 @@ import (
 )
 
 func TestParseInLocal(t *testing.T) {
-	t1, err:=ParseInLocal("2006-01-02 15:04:05", "2020-02-03 04:05:06")
+	t1, err := ParseInLocal("2006-01-02 15:04:05", "2020-02-03 04:05:06")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,7 +23,7 @@ func TestParseInLocal(t *testing.T) {
 		t.Fatalf("ParseInLocal(2020-02-03 04:05:06).Location() = _, %v, want _, %v", t1.Location(), time.Local)
 	}
 
-	local:= time.Local
+	local := time.Local
 	defer func() {
 		time.Local = local
 	}()

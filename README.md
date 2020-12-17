@@ -1,7 +1,7 @@
 # go-extend
 
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://pkg.go.dev/github.com/thinkeridea/go-extend)
-[![Build Status](https://travis-ci.org/thinkeridea/go-extend.svg?branch=master)](https://travis-ci.org/thinkeridea/go-extend)
+[![Actions Status](https://github.com/thinkeridea/go-extend/workflows/ci/badge.svg)](https://github.com/thinkeridea/go-extend/actions?workflow=ci)
 [![codecov](https://codecov.io/gh/thinkeridea/go-extend/branch/master/graph/badge.svg)](https://codecov.io/gh/thinkeridea/go-extend)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thinkeridea/go-extend)](https://goreportcard.com/report/github.com/thinkeridea/go-extend)
 

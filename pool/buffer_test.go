@@ -5,7 +5,6 @@ package pool
 
 import (
 	"bytes"
-	"sync"
 	"testing"
 )
 
@@ -167,7 +166,7 @@ func TestPool_Get(t *testing.T) {
 }
 
 func TestPool_Put(t *testing.T) {
-	p := (*pool)(newBufferPool(64))
+	p := (*bufferPool)(newBufferPool(64))
 	b := p.Get()
 	b.WriteString("xx")
 	if b.String() != "xx" {
@@ -178,7 +177,7 @@ func TestPool_Put(t *testing.T) {
 
 	var bb *bytes.Buffer
 	// 开启 race 时有一定概率导致 Put 被丢弃
-	pp := (*sync.Pool)(p)
+	pp := p.Pool
 	for i := 0; i < 10; i++ {
 		bb = pp.Get().(*bytes.Buffer)
 		if bb.String() == "xx" {

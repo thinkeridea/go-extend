@@ -11,7 +11,7 @@ import (
 func TestRound(t *testing.T) {
 	var vf = []struct {
 		v                              float64
-		p_1                            float64
+		pm1                            float64
 		p0, p1, p2, p3, p4, p5, p6, p7 float64
 	}{
 		{4.9790119248836735e+00, 0, 5, 5.0, 4.98, 4.979, 4.9790, 4.97901, 4.979012, 4.9790119},
@@ -39,7 +39,7 @@ func TestRound(t *testing.T) {
 	var vfSC = []struct {
 		v                                 float64
 		p1, p0                            float64
-		p_1, p_2, p_3, p_4, p_5, p_6, p_7 float64
+		pm1, pm2, pm3, pm4, pm5, pm6, pm7 float64
 	}{
 		{2251799813685249.5, 2251799813685249.5, 2251799813685250, 2251799813685250, 2251799813685200, 2251799813685000, 2251799813690000, 2251799813700000, 2251799814000000, 2251799810000000},
 		{2251799813685250.5, 2251799813685250.5, 2251799813685251, 2251799813685250, 2251799813685300, 2251799813685000, 2251799813690000, 2251799813700000, 2251799814000000, 2251799810000000},
@@ -48,7 +48,7 @@ func TestRound(t *testing.T) {
 	}
 
 	for _, cases := range vf {
-		expected := []float64{cases.p_1, cases.p0, cases.p1, cases.p2, cases.p3, cases.p4, cases.p5, cases.p6, cases.p7}
+		expected := []float64{cases.pm1, cases.p0, cases.p1, cases.p2, cases.p3, cases.p4, cases.p5, cases.p6, cases.p7}
 		for precision := -1; precision < 8; precision++ {
 			if actual := Round(cases.v, precision); actual != expected[precision+1] && !(math.IsNaN(actual) && math.IsNaN(expected[precision+1])) {
 				t.Errorf("Round(%f, %d) %f != %f", cases.v, precision, actual, expected[precision+1])
@@ -57,7 +57,7 @@ func TestRound(t *testing.T) {
 	}
 
 	for _, cases := range vfSC {
-		expected := []float64{cases.p1, cases.p0, cases.p_1, cases.p_2, cases.p_3, cases.p_4, cases.p_5, cases.p_6, cases.p_7}
+		expected := []float64{cases.p1, cases.p0, cases.pm1, cases.pm2, cases.pm3, cases.pm4, cases.pm5, cases.pm6, cases.pm7}
 		for i, precision := range []int{1, 0, -1, -2, -3, -4, -5, -6, -7} {
 			if actual := Round(cases.v, precision); actual != expected[i] {
 				t.Errorf("Round(%f, %d) %f != %f", cases.v, precision, actual, expected[i])

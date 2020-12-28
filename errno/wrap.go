@@ -166,6 +166,8 @@ func (w *wrap) Unwrap() error {
 	return w.err
 }
 
+// Is 这是 errors.Is 接口实现，可以通过 errors.Is 函数判断 WrapErrno 是否包含某个具体的错误
+// 更详细的细节请浏览 errors.Is 文档
 func (w *wrap) Is(target error) bool {
 	if w == nil {
 		return false
@@ -173,6 +175,8 @@ func (w *wrap) Is(target error) bool {
 	return w.err.Is(target)
 }
 
+// As 这是 errors.As 接口实现，可以通过 errors.As 函数判断 WrapErrno 是否包含某个类型的错误，并把发现的第一个错误赋值给 target
+// 更详细的细节请浏览 errors.As 文档
 func (w *wrap) As(target interface{}) bool {
 	if w == nil {
 		return false

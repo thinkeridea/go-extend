@@ -5,6 +5,7 @@ package exsync
 
 import (
 	"sync"
+	"sync/atomic"
 	"unsafe"
 )
 
@@ -30,9 +31,15 @@ import (
 // 	return res[0].(*mysql.Client), res[1].(error)
 // }
 //
-// 使用该方法需要一些取舍，它简单实用，相比 sync.Once 性能有所下降，不过它依然很快，这不会形成性能问题。
+// 使用该方法需要一些取舍，它简单实用，性能无限接近 sync.Once。
 type Once struct {
-	once sync.Once
+	// done indicates whether the action has been performed.
+	// It is first in the struct because it is used in the hot path.
+	// The hot path is inlined at every call site.
+	// Placing done first allows more compact instructions on some architectures (amd64/x86),
+	// and fewer instructions (to calculate offset) on other architectures.
+	done uint32
+	m    sync.Mutex
 	v    interface{}
 }
 
@@ -55,16 +62,26 @@ type Once struct {
 // without calling f.
 //
 func (o *Once) Do(f func() interface{}) interface{} {
-	o.once.Do(func() {
-		o.v = f()
-	})
+	if atomic.LoadUint32(&o.done) == 0 {
+		o.doSlow(f)
+	}
 
 	return o.v
 }
 
-// OncePointer 性能方面略好于 Once，但不会有太大改善，依然落后于 sync.Once， 在某些场景下可以使用，更推荐使用 Once
+func (o *Once) doSlow(f func() interface{}) {
+	o.m.Lock()
+	defer o.m.Unlock()
+	if o.done == 0 {
+		defer atomic.StoreUint32(&o.done, 1)
+		o.v = f()
+	}
+}
+
+// OncePointer 性能方面略好于 Once，但不会有太大改善， 在某些场景下可以使用，更推荐使用 Once
 type OncePointer struct {
-	once sync.Once
+	done uint32
+	m    sync.Mutex
 	v    unsafe.Pointer
 }
 
@@ -87,9 +104,18 @@ type OncePointer struct {
 // without calling f.
 //
 func (o *OncePointer) Do(f func() unsafe.Pointer) unsafe.Pointer {
-	o.once.Do(func() {
-		o.v = f()
-	})
+	if atomic.LoadUint32(&o.done) == 0 {
+		o.doSlow(f)
+	}
 
 	return o.v
+}
+
+func (o *OncePointer) doSlow(f func() unsafe.Pointer) {
+	o.m.Lock()
+	defer o.m.Unlock()
+	if o.done == 0 {
+		defer atomic.StoreUint32(&o.done, 1)
+		o.v = f()
+	}
 }

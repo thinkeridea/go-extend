@@ -63,17 +63,6 @@ func TestOncePanic(t *testing.T) {
 	})
 }
 
-func BenchmarkOnce(b *testing.B) {
-	var once Once
-	var o = new(one)
-	f := func() interface{} { return o }
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			_ = once.Do(f).(*one)
-		}
-	})
-}
-
 func runPointer(t *testing.T, once *OncePointer, o *one, c chan bool) {
 	v := once.Do(func() unsafe.Pointer {
 		o.Increment()
@@ -120,18 +109,5 @@ func TestOncePointerPanic(t *testing.T) {
 	_ = once.Do(func() unsafe.Pointer {
 		t.Fatalf("Once.Do called twice")
 		return nil
-	})
-}
-
-func BenchmarkOncePointer(b *testing.B) {
-	var once OncePointer
-	var o = new(one)
-	f := func() unsafe.Pointer {
-		return unsafe.Pointer(o)
-	}
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			_ = (*one)(once.Do(f))
-		}
 	})
 }

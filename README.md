@@ -4,6 +4,7 @@
 [![Actions Status](https://github.com/thinkeridea/go-extend/workflows/ci/badge.svg)](https://github.com/thinkeridea/go-extend/actions?workflow=ci)
 [![codecov](https://codecov.io/gh/thinkeridea/go-extend/branch/main/graph/badge.svg)](https://codecov.io/gh/thinkeridea/go-extend)
 [![Go Report Card](https://goreportcard.com/badge/github.com/thinkeridea/go-extend)](https://goreportcard.com/report/github.com/thinkeridea/go-extend)
+[![GitHub release](https://img.shields.io/github/v/tag/thinkeridea/go-extend.svg?label=release)](https://github.com/thinkeridea/go-extend/releases)
 
 go-extend 收集一些常用的操作函数，辅助更快的完成开发工作，并减少重复代码。
 

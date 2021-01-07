@@ -28,7 +28,7 @@ func Uint64(v uint64) *uint64 {
 	return &v
 }
 
-// Uint8 返回 int8 的指针类型
+// Int8 返回 int8 的指针类型
 func Int8(v int8) *int8 {
 	return &v
 }

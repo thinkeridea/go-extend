@@ -12,7 +12,13 @@ import (
 )
 
 // HasLocalIPddr 检测 IP 地址字符串是否是内网地址
+// Deprecated: 此为一个错误名称错误拼写的函数，计划在将来移除，请使用 HasLocalIPAddr 函数
 func HasLocalIPddr(ip string) bool {
+	return HasLocalIPAddr(ip)
+}
+
+// HasLocalIPAddr 检测 IP 地址字符串是否是内网地址
+func HasLocalIPAddr(ip string) bool {
 	return HasLocalIP(net.ParseIP(ip))
 }
 
@@ -61,18 +67,18 @@ func ClientPublicIP(r *http.Request) string {
 	var ip string
 	for _, ip = range strings.Split(r.Header.Get("X-Forwarded-For"), ",") {
 		ip = strings.TrimSpace(ip)
-		if ip != "" && !HasLocalIPddr(ip) {
+		if ip != "" && !HasLocalIPAddr(ip) {
 			return ip
 		}
 	}
 
 	ip = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
-	if ip != "" && !HasLocalIPddr(ip) {
+	if ip != "" && !HasLocalIPAddr(ip) {
 		return ip
 	}
 
 	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
-		if !HasLocalIPddr(ip) {
+		if !HasLocalIPAddr(ip) {
 			return ip
 		}
 	}

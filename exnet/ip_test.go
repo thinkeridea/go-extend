@@ -43,6 +43,40 @@ func TestHasLocalIPddr(t *testing.T) {
 	}
 }
 
+func TestHasLocalIPAddr(t *testing.T) {
+	for ipString, expected := range map[string]bool{
+		"":                   false,
+		"invalid ip address": false,
+		"127.0.0.1":          true,
+		"::1":                true,
+		"182.56.9.18":        false,
+		"192.168.9.18":       true,
+		"10.168.9.18":        true,
+		"11.168.9.18":        false,
+		"172.16.9.18":        true,
+		"172.17.9.18":        true,
+		"172.18.9.18":        true,
+		"172.19.9.18":        true,
+		"172.20.9.18":        true,
+		"172.21.9.18":        true,
+		"172.22.9.18":        true,
+		"172.23.9.18":        true,
+		"172.24.9.18":        true,
+		"172.25.9.18":        true,
+		"172.26.9.18":        true,
+		"172.27.9.18":        true,
+		"172.28.9.18":        true,
+		"172.29.9.18":        true,
+		"172.30.9.18":        true,
+		"172.31.9.18":        true,
+		"172.32.9.18":        false,
+	} {
+		if HasLocalIPAddr(ipString) != expected {
+			t.Errorf("ip %s", ipString)
+		}
+	}
+}
+
 func TestHasLocalIP(t *testing.T) {
 	for ipString, expected := range map[string]bool{
 		"":                   false,

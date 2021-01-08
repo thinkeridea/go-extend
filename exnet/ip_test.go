@@ -188,7 +188,7 @@ func TestClientPublicIP(t *testing.T) {
 	r := &http.Request{Header: http.Header{}}
 	r.Header.Set("X-Real-IP", " 10.10.10.10  ")
 	r.Header.Set("X-Forwarded-For", " 172.17.40.152, 192.168.5.45")
-	r.RemoteAddr = "  40.40.40.40:42123 "
+	r.RemoteAddr = "40.40.40.40:42123 "
 
 	if ip := ClientPublicIP(r); ip != "40.40.40.40" {
 		t.Errorf("actual:40.40.40.40, expected:%s", ip)
@@ -201,7 +201,7 @@ func TestClientPublicIP(t *testing.T) {
 
 	r.Header.Del("X-Real-IP")
 	r.Header.Del("X-Forwarded-For")
-	r.RemoteAddr = "  127.0.0.1:42123 "
+	r.RemoteAddr = "127.0.0.1:42123 "
 	if ip := ClientPublicIP(r); ip != "" {
 		t.Errorf("ip: 127.0.0.1")
 	}

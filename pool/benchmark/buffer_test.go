@@ -1,3 +1,6 @@
+// MIT License
+// Copyright (c) 2020 Qi Yin <qiyin@thinkeridea.com>
+
 package benchmark
 
 import (

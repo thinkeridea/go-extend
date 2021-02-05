@@ -5,11 +5,103 @@ package pool
 
 import (
 	"bytes"
+	"math/bits"
+	"sort"
 	"sync"
+	"sync/atomic"
 	"unsafe"
 
 	"github.com/thinkeridea/go-extend/exsync"
 )
+
+const (
+	bucketSize              = 22
+	minSizeBits             = 6
+	minSize                 = 1 << minSizeBits                    // 2^6=64
+	maxSize                 = 1 << (minSizeBits + bucketSize - 1) // 2^28=256MB
+	calibrateCallsThreshold = 10240
+)
+
+var (
+	buffBucket = [bucketSize]sync.Pool{}
+)
+
+// BufferPool bytes.Buffer 的 sync.Pool 接口
+// 可以直接 Get *bytes.Buffer 并 Reset Buffer
+type BufferPool interface {
+
+	// Get 从 Pool 中获取一个 *bytes.Buffer 实例, 该实例已经被 Reset
+	Get() *bytes.Buffer
+	// Put 把 *bytes.Buffer 放回 Pool 中
+	Put(*bytes.Buffer)
+}
+
+type buffer struct {
+	index       uint32
+	calibrating uint32
+	release     uint32
+	calls       [bucketSize]uint32
+}
+
+func NewBuffer(size int) BufferPool {
+	b := &buffer{}
+	b.index = uint32(buffBucketIndex(size))
+	return b
+}
+
+func (p *buffer) Get() *bytes.Buffer {
+	idx := atomic.LoadUint32(&p.index)
+	v := buffBucket[idx].Get()
+	if v != nil {
+		b := v.(*bytes.Buffer)
+		b.Reset()
+		return b
+	}
+
+	return bytes.NewBuffer(make([]byte, 0, minSize<<idx))
+}
+
+func (p *buffer) Put(b *bytes.Buffer) {
+	if b.Cap() <= maxSize {
+		buffBucket[buffBucketIndex(b.Cap())].Put(b)
+	}
+
+	atomic.AddUint32(&p.calls[buffBucketIndex(bufferLen(b))], 1)
+	if atomic.AddUint32(&p.release, 1) > calibrateCallsThreshold {
+		p.calibrate()
+	}
+}
+
+func (p *buffer) calibrate() {
+	if !atomic.CompareAndSwapUint32(&p.calibrating, 0, 1) {
+		return
+	}
+
+	var callSize [bucketSize]uint64
+	for i := range callSize {
+		callSize[i] = uint64(atomic.SwapUint32(&p.calls[i], 0))<<32 | minSize<<i
+	}
+
+	sort.Slice(callSize[:], func(i, j int) bool {
+		return callSize[i] > callSize[j]
+	})
+
+	atomic.SwapUint32(&p.index, uint32(buffBucketIndex(int(callSize[0]<<32>>32))))
+	atomic.StoreUint32(&p.release, 0)
+	atomic.SwapUint32(&p.calibrating, 0)
+}
+
+func buffBucketIndex(n int) int {
+	if n == 0 {
+		return 0
+	}
+
+	idx := bits.Len32(uint32((n - 1) >> minSizeBits))
+	if idx >= bucketSize {
+		idx = bucketSize - 1
+	}
+	return idx
+}
 
 var (
 	buff64   exsync.OncePointer
@@ -23,16 +115,6 @@ var (
 
 type bufferPool struct {
 	sync.Pool
-}
-
-// BufferPool bytes.Buffer 的 sync.Pool 接口
-// 可以直接 Get *bytes.Buffer 并 Reset Buffer
-type BufferPool interface {
-
-	// Get 从 Pool 中获取一个 *bytes.Buffer 实例, 该实例已经被 Reset
-	Get() *bytes.Buffer
-	// Put 把 *bytes.Buffer 放回 Pool 中
-	Put(*bytes.Buffer)
 }
 
 func newBufferPool(size int) unsafe.Pointer {

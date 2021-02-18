@@ -43,12 +43,15 @@ type buffer struct {
 	calls       [bucketSize]uint32
 }
 
+// NewBuffer 创建一个动态评估需求容量的 BufferPool，它们共享一个底层 bytes.Buffer 区间池
+// Deprecated: 这是错误测试产生的结果，它并没有相较 sync.Pool 有明显优势，详细参看: https://github.com/thinkeridea/go-extend/issues/17
 func NewBuffer(size int) BufferPool {
 	b := &buffer{}
 	b.index = uint32(buffBucketIndex(size))
 	return b
 }
 
+// Get 从 Pool 中获取一个 *bytes.Buffer 实例, 该实例已经被 Reset
 func (p *buffer) Get() *bytes.Buffer {
 	idx := atomic.LoadUint32(&p.index)
 	v := buffBucket[idx].Get()
@@ -61,6 +64,7 @@ func (p *buffer) Get() *bytes.Buffer {
 	return bytes.NewBuffer(make([]byte, 0, minSize<<idx))
 }
 
+// Put 把 *bytes.Buffer 放回 Pool 中
 func (p *buffer) Put(b *bytes.Buffer) {
 	if b.Cap() <= maxSize {
 		buffBucket[buffBucketIndex(b.Cap())].Put(b)

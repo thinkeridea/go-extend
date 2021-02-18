@@ -9,7 +9,7 @@ import (
 	"github.com/thinkeridea/go-extend/pool"
 )
 
-var buffPool = pool.NewBuffer(64)
+var buffPool = pool.GetBuff64()
 
 // JoinInts 使用 sep 连接 []int 并返回连接的字符串
 func JoinInts(v []int, sep string) string {

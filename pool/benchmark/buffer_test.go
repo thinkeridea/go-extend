@@ -51,6 +51,7 @@ func BenchmarkBufferSyncPool(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		data.Next()
 		bf := buff.Get().(*bytes.Buffer)
+		bf.Reset()
 		bf.Write(data.Value.([]byte))
 
 		idx := i % 20
@@ -89,6 +90,7 @@ func BenchmarkBufferFixedSizeSyncPool(b *testing.B) {
 	data := make([]byte, 50)
 	for i := 0; i < b.N; i++ {
 		bf := buff.Get().(*bytes.Buffer)
+		bf.Reset()
 		bf.Write(data)
 
 		idx := i % 20

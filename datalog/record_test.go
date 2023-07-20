@@ -70,9 +70,9 @@ func TestRecord_ToBytes(t *testing.T) {
 
 func TestRecord_UnsafeToBytes(t *testing.T) {
 	r := NewRecord(3)
-	r[0] = fmt.Sprint("0")
-	r[1] = fmt.Sprint("1")
-	r[2] = fmt.Sprint("2")
+	r[0] = "0"
+	r[1] = "1"
+	r[2] = "2"
 
 	data := r.UnsafeToBytes(FieldSep, NewLine)
 	if string(data) != strings.Join([]string(r), FieldSep)+NewLine {
@@ -180,9 +180,9 @@ func TestRecord_ArrayFieldJoin(t *testing.T) {
 
 func TestRecord_UnsafeArrayFieldJoin(t *testing.T) {
 	r := NewRecord(3)
-	r[0] = fmt.Sprint("0")
-	r[1] = fmt.Sprint("1")
-	r[2] = fmt.Sprint("2")
+	r[0] = "0"
+	r[1] = "1"
+	r[2] = "2"
 
 	data := r.UnsafeArrayFieldJoin(ArrayFieldSep, ArraySep)
 	if string(data) != strings.Join([]string(r), ArrayFieldSep) {
@@ -194,7 +194,7 @@ func TestRecord_UnsafeArrayFieldJoin(t *testing.T) {
 	r2 = fmt.Sprint("2" + ArraySep)
 
 	r[0] = r0
-	r[1] = fmt.Sprint("1")
+	r[1] = "1"
 	r[2] = r2
 
 	data = r.UnsafeArrayFieldJoin(ArrayFieldSep, ArraySep)

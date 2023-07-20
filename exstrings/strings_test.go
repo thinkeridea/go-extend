@@ -47,8 +47,8 @@ func TestUnsafeReverseASCII(t *testing.T) {
 	cases := []struct {
 		in, want string
 	}{
-		{fmt.Sprint("Hello, world"), "dlrow ,olleH"},
-		{fmt.Sprint(""), ""},
+		{"Hello, world", "dlrow ,olleH"},
+		{"", ""},
 	}
 	for _, c := range cases {
 		got := UnsafeReverseASCII(c.in)
